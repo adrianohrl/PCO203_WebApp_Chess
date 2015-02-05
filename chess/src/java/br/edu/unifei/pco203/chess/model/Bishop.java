@@ -18,18 +18,34 @@ public class Bishop extends Piece {
         super();
     }
     
-    public Bishop(char rank, char file, boolean whiteSet, Board board) {
+    public Bishop(char rank, char file, boolean whiteSet, Board board) throws GameException {
         super(rank, file, whiteSet, board);
     }
 
     @Override
     public boolean isValidMovement(char desiredRank, char desiredFile) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int vDisplacement = Math.abs(desiredRank - getRank());
+        int hDisplacement = Math.abs(desiredFile - getFile());
+        return vDisplacement == hDisplacement && super.isValidMovement(desiredRank, desiredFile);
     }
     
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + " " + super.toString();
+        if (super.isWhiteSet()) {
+            return "B";
+        } else {
+            return "b";
+        }
     }
+    
+    @Override
+    public boolean equals(Piece piece) {
+        return super.equals(piece) && piece instanceof Bishop;
+    }
+    
+    /*@Override
+    public String toString() {
+        return this.getClass().getSimpleName() + " " + super.toString();
+    }*/
     
 }

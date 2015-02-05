@@ -13,14 +13,14 @@ import javax.persistence.Entity;
  */
 @Entity
 public class Rook extends Piece {
-    
+
     private boolean movedBefore = false;
 
     public Rook() {
         super();
     }
-    
-    public Rook(char rank, char file, boolean whiteSet, Board board) {
+
+    public Rook(char rank, char file, boolean whiteSet, Board board) throws GameException {
         super(rank, file, whiteSet, board);
     }
 
@@ -32,14 +32,41 @@ public class Rook extends Piece {
 
     @Override
     public boolean isValidMovement(char desiredRank, char desiredFile) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int vDisplacement = Math.abs(desiredRank - getRank());
+        int hDisplacement = Math.abs(desiredFile - getFile());
+        return vDisplacement * hDisplacement == 0 && super.isValidMovement(desiredRank, desiredFile);
+    }
+
+    @Override
+    public String toString() {
+        if (super.isWhiteSet()) {
+            return "R";
+        } else {
+            return "r";
+        }
     }
     
     @Override
-    public String toString() {
-        return this.getClass().getSimpleName() + " " + super.toString();
+    public boolean equals(Piece piece) {
+        return super.equals(piece) && piece instanceof Bishop && this.equals((Rook) piece);
+    }
+    
+    public boolean equals(Rook rook) {
+        return super.equals(rook) && movedBefore == rook.movedBefore;
+    }
+    
+    @Override
+    public Rook clone() throws CloneNotSupportedException {
+        Rook rook = (Rook) super.clone();
+        rook.setMovedBefore(movedBefore);
+        return rook;
     }
 
+    /*@Override
+     public String toString() {
+     return this.getClass().getSimpleName() + " " + super.toString();
+     }*/
+    
     public boolean isMovedBefore() {
         return movedBefore;
     }
@@ -47,5 +74,5 @@ public class Rook extends Piece {
     public void setMovedBefore(boolean movedBefore) {
         this.movedBefore = movedBefore;
     }
-    
+
 }

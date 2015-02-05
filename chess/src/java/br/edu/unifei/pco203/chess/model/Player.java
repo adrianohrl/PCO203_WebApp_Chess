@@ -8,7 +8,6 @@ package br.edu.unifei.pco203.chess.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -40,21 +39,12 @@ public class Player implements Serializable {
     public String toString() {
         return name;
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof Player && this.equals((Player) obj);
-    }
     
-    public boolean equals(Player anotherPlayer) {
-        return this.name.equals(anotherPlayer.getName());
-    }
-
     @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 59 * hash + Objects.hashCode(this.name);
-        return hash;
+    public Player clone() throws CloneNotSupportedException {
+        Player player = (Player) super.clone();
+        player.setName(name);
+        return player;
     }
 
     public String getName() {

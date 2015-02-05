@@ -32,7 +32,6 @@ public class Game implements Serializable {
     private Calendar pauseDate;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Calendar endDate;
-    private boolean finished = false;
     private boolean whiteTurn = true;
     private float lastingTime = 1800;
     private float whiteElapsedTime;
@@ -65,15 +64,12 @@ public class Game implements Serializable {
     }
 
     public void move(Piece piece, char desiredRank, char desiredFile) throws GameException {
-        char previousRank = piece.getRank();
-        char previousFile = piece.getFile();
         if (piece.isWhiteSet() != whiteTurn) {
             String message = "It is ";
             if (whiteTurn) {
-                message += "White";
-            }
-            else {
-                message += "Black";
+                message += white.getName();//"White";
+            } else {
+                message += black.getName();//"Black";
             }
             message += "'s turn!!!";
             throw new GameException(message);
@@ -87,13 +83,9 @@ public class Game implements Serializable {
             movement = new Movement(desiredRank, desiredFile, piece, black, this);
             set = board.getBlackSet();
         }
-        if (movement.isValid()) {
-            piece.move(desiredRank, desiredFile);
-            set.getMovements().add(movement);
-        }
-        if (previousRank != piece.getRank() || previousFile != piece.getFile()) {
-            toggle();
-        }
+        movement.move();
+        set.getMovements().add(movement);
+        toggle();
     }
 
     private void toggle() {
@@ -106,10 +98,30 @@ public class Game implements Serializable {
         }
         endDate = new GregorianCalendar();
         if (whiteTurn) {
-            winner = white;
+            blackWon();
         } else {
-            winner = black;
+            whiteWon();
         }
+    }
+
+    private void whiteWon() {
+        winner = white;
+    }
+
+    private void blackWon() {
+        winner = black;
+    }
+
+    private void draw() {
+        winner = null;
+    }
+
+    public boolean isFinished() {
+        return endDate != null;
+    }
+    
+    public boolean isPaused() {
+        return pauseDate != null;
     }
 
     @Override
@@ -138,14 +150,6 @@ public class Game implements Serializable {
         }
         string += "   " + board;
         return string;
-    }
-    
-    public int compareTo(Game anotherGame) {
-        return startDate.compareTo(anotherGame.getStartDate());
-    }
-    
-    public boolean hasPlayed(Player player) {
-        return white.equals(player) || black.equals(player);
     }
 
     public int getCode() {
@@ -178,14 +182,6 @@ public class Game implements Serializable {
 
     public void setEndDate(Calendar endDate) {
         this.endDate = endDate;
-    }
-
-    public boolean isFinished() {
-        return finished;
-    }
-
-    public void setFinished(boolean finished) {
-        this.finished = finished;
     }
 
     public boolean isWhiteTurn() {

@@ -14,22 +14,40 @@ import javax.persistence.Entity;
 @Entity
 public class Knight extends Piece {
 
-    public Knight () {
+    public Knight() {
         super();
     }
-    
-    public Knight(char rank, char file, boolean whiteSet, Board board) {
+
+    public Knight(char rank, char file, boolean whiteSet, Board board) throws GameException {
         super(rank, file, whiteSet, board);
     }
 
     @Override
     public boolean isValidMovement(char desiredRank, char desiredFile) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (getBoard().isThereAnyColleaguePieceAt(desiredRank, desiredFile, this)) {
+            return false;
+        }
+        int vDisplacement = Math.abs(desiredRank - getRank());
+        int hDisplacement = Math.abs(desiredFile - getFile());
+        return vDisplacement * hDisplacement == 2;
+    }
+
+    @Override
+    public String toString() {
+        if (super.isWhiteSet()) {
+            return "N";
+        } else {
+            return "n";
+        }
     }
     
     @Override
-    public String toString() {
-        return this.getClass().getSimpleName() + " " + super.toString();
+    public boolean equals(Piece piece) {
+        return super.equals(piece) && piece instanceof Knight;
     }
-    
+
+    /*@Override
+     public String toString() {
+     return this.getClass().getSimpleName() + " " + super.toString();
+     }*/
 }

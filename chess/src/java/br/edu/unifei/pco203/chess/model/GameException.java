@@ -9,7 +9,7 @@ package br.edu.unifei.pco203.chess.model;
  *
  * @author adriano
  */
-public class GameException extends RuntimeException {///Exception {
+public class GameException extends Exception {
 
     public GameException(String message) {
         super(message);
