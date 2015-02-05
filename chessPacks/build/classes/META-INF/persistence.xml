@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="chessPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <class>br.edu.unifei.pco203.chess.model.Bishop</class>
+    <class>br.edu.unifei.pco203.chess.model.Board</class>
+    <class>br.edu.unifei.pco203.chess.model.Game</class>
+    <class>br.edu.unifei.pco203.chess.model.King</class>
+    <class>br.edu.unifei.pco203.chess.model.Knight</class>
+    <class>br.edu.unifei.pco203.chess.model.Movement</class>
+    <class>br.edu.unifei.pco203.chess.model.Pawn</class>
+    <class>br.edu.unifei.pco203.chess.model.Piece</class>
+    <class>br.edu.unifei.pco203.chess.model.Player</class>
+    <class>br.edu.unifei.pco203.chess.model.Queen</class>
+    <class>br.edu.unifei.pco203.chess.model.Rook</class>
+    <class>br.edu.unifei.pco203.chess.model.SetOfPieces</class>
+    <properties>
+      <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/chess?zeroDateTimeBehavior=convertToNull"/>
+      <property name="javax.persistence.jdbc.user" value="chess"/>
+      <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+      <property name="javax.persistence.jdbc.password" value="chess"/>
+      <property name="javax.persistence.schema-generation.database.action" value="create"/>
+    </properties>
+  </persistence-unit>
+</persistence>
