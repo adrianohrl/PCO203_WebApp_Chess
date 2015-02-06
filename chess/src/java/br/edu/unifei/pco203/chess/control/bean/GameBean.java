@@ -26,7 +26,6 @@ public class GameBean {
     private final EntityManager em = DataSource.createEntityManager();
     private final GameDAO gameDAO = new GameDAO(em);
     private final PlayerDAO playerDAO = new PlayerDAO(em);
-    private Clock clock;
     private Game game = new Game();
     private List<String> playersList = playerDAO.findAllNames();
     private String selectedWhitePlayer;
@@ -41,16 +40,20 @@ public class GameBean {
         game = new Game(white, black);
         game.getStarted();
         gameDAO.createFullfilledGame(game);
-        return "board/play";
+        return "/board/play";
+    }
+    
+    public String checkMate() {
+        if (game == null) {
+            return "";
+        }
+        game.checkMate();
+        gameDAO.update(game);
+        return "/index";
     }
     
     public String update() {
         
-        return "/index";
-    }
-
-    public String create() {
-        gameDAO.create(game);
         return "/index";
     }
 

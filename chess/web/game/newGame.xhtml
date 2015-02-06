@@ -4,9 +4,9 @@
                 template="./../template.xhtml"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:p="http://primefaces.org/ui">
-
     <ui:define name="content">
         <h:form>
+            <br/>
             <h:panelGrid id="grid" columns="3" cellpadding="2">
                 <p:outputLabel for="white" value="White Player:" />
                 <p:inputText id="white" value="#{gameBean.selectedWhitePlayer}" required="true" />
@@ -16,8 +16,7 @@
                 <p:inputText id="black" value="#{gameBean.selectedBlackPlayer}" required="true" />
                 <p:message for="black" display="Black's name is required!!!" />
             </h:panelGrid>
-            <p:commandButton id="start" value="Start" update="grid" action="#{gameBean.start()}" />
+            <br/><p:commandButton id="start" value="Start" update="grid" action="#{gameBean.start()}" />
         </h:form>
     </ui:define>
-
 </ui:composition>

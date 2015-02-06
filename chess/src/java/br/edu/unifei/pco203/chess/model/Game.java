@@ -58,6 +58,10 @@ public class Game implements Serializable {
         if (startDate != null) {
             return;
         }
+        white.setLastGame(this);
+        //white.getPlayedGames().add(this);
+        black.setLastGame(this);
+        //black.getPlayedGames().add(this);
         board = new Board();
         board.setup();
         startDate = new GregorianCalendar();
