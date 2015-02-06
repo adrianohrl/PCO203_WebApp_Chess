@@ -37,7 +37,7 @@ public class GameDAO extends DAO<Game, Integer> {
     }
     
     public List<Calendar> findAllUnfinished() {
-        return em.createQuery("SELECT g.startDate FROM Game g WHERE g.finished = FALSE").getResultList();
+        return em.createQuery("SELECT g.startDate FROM Game g WHERE g.endDate IS NULL").getResultList();
     }
     
 }

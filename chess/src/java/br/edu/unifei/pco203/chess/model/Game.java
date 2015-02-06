@@ -119,9 +119,21 @@ public class Game implements Serializable {
     public boolean isFinished() {
         return endDate != null;
     }
-    
+
     public boolean isPaused() {
         return pauseDate != null;
+    }
+
+    public int compareTo(Game anotherGame) {
+        if (pauseDate != null) {
+            return pauseDate.compareTo(anotherGame.getPauseDate());
+        } else {
+            return startDate.compareTo(anotherGame.getStartDate());
+        }
+    }
+
+    public boolean hasPlayed(Player player) {
+        return white.equals(player) || black.equals(player);
     }
 
     @Override

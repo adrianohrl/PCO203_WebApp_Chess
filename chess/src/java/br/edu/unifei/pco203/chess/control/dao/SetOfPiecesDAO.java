@@ -25,7 +25,7 @@ public class SetOfPiecesDAO extends DAO<SetOfPieces, Integer> {
             throw new DAOException("Set of Pieces must not be null!!!");
         }
         em.persist(set);
-        PieceDAO pieceDAO = new PieceDAO(em);
+        PieceDAO<Piece> pieceDAO = new PieceDAO<>(em);
         List<Piece> pieces = set.getPieces();
         for (Piece piece : pieces) {
             pieceDAO.creatingFullfilledGame(piece);

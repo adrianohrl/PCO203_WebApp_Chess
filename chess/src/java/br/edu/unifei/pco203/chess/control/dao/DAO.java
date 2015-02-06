@@ -6,6 +6,7 @@
 package br.edu.unifei.pco203.chess.control.dao;
 
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.TypeVariable;
 import java.util.List;
 import javax.persistence.EntityManager;
 
@@ -18,9 +19,15 @@ import javax.persistence.EntityManager;
 public abstract class DAO<E, K> {
 
     protected EntityManager em;
-    private final Class<E> clazz = (Class<E>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+    private final Class<E> clazz;
 
     protected DAO(EntityManager em) {
+        Object aux = ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+        if (aux instanceof Class) {
+            this.clazz = (Class<E>) aux;
+        } else {
+            this.clazz = (Class<E>) ((TypeVariable) aux).getGenericDeclaration();
+        }
         this.em = em;
     }
 

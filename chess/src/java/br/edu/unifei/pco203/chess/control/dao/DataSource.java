@@ -24,5 +24,9 @@ public class DataSource {
     public static EntityManager createEntityManager() {
         return emf.createEntityManager();
     }
+    
+    public static void closeEntityManagerFactory() {
+        emf.close();
+    }
 
 }

@@ -34,6 +34,14 @@ public class PlayerDAO extends DAO<Player, String> {
         return em.createQuery("SELECT g FROM Game g WHERE g.winner.name = '" + player.getName() + "' ORDER BY g.startDate DESC").getResultList();
     }
     
+    public Player createPlayer(String name) {
+        Player player = find(name);
+        if (player == null) {
+            player = new Player(name);
+        }
+        return player;
+    }
+    
     /*public List<String> findAllMovements(Player player) {
         return em.createQuery("SELECT s.movement FROM").getResultList();
     }*/

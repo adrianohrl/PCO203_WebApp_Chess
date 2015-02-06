@@ -15,16 +15,14 @@
 
         <div id="top">
             <ui:insert name="top">
-                <h:graphicImage library="images" name="logo.png"/>
             </ui:insert>
         </div>
         <div>
             <div id="left">
                 <ui:insert name="left">
                     <h:form>
-                        <h:commandLink value="Insert Game" action="game/create.xhtml"/><br/>
-                        <h:commandLink value="Insert Player" action="player/create.xhtml"/><br/>
-                        <h:commandLink value="Insert Movement" action="movement/create.xhtml"/><br/>
+                        <br/><h:commandLink value="New Game" action="game/newGame"/><br/>
+                        <br/><h:commandLink value="Load Game" action="game/loadGame"/><br/>
                     </h:form>
                 </ui:insert>
             </div>
