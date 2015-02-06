@@ -16,58 +16,76 @@
                 </div>
                 <div id="content_center" class="content_center">
                     <ui:insert name="content_center"></ui:insert>
-                    <p:growl id="msgs" showDetail="true" />
-                    <p:dashboard id="board" model="#{boardView.model}">
-                        <p:ajax event="reorder" listener="#{boardView.handleReorder}" update="msgs" />
-                        <p:panel id="pawnA">
-                            <h:graphicImage library="images/pieces/black" name="pawn.png" />
-                        </p:panel>
-                        <p:panel id="pawnB">
-                            <h:graphicImage library="images/pieces/black" name="pawn.png" />
-                        </p:panel>
-                        <p:panel id="pawnC">
-                            <h:graphicImage library="images/pieces/black" name="pawn.png" />
-                        </p:panel>
-                        <p:panel id="pawnD">
-                            <h:graphicImage library="images/pieces/black" name="pawn.png" />
-                        </p:panel>
-                        <p:panel id="pawnE">
-                            <h:graphicImage library="images/pieces/black" name="pawn.png" />
-                        </p:panel>
-                        <p:panel id="pawnF">
-                            <h:graphicImage library="images/pieces/black" name="pawn.png" />
-                        </p:panel>
-                        <p:panel id="pawnG">
-                            <h:graphicImage library="images/pieces/black" name="pawn.png" />
-                        </p:panel>
-                        <p:panel id="pawnH">
-                            <h:graphicImage library="images/pieces/black" name="pawn.png" />
-                        </p:panel>
-                        <p:panel id="rookA">
-                            <h:graphicImage library="images/pieces/black" name="rook.png" />
-                        </p:panel>
-                        <p:panel id="rookH">
-                            <h:graphicImage library="images/pieces/black" name="rook.png" />
-                        </p:panel>
-                        <p:panel id="knightB">
-                            <h:graphicImage library="images/pieces/black" name="knight.png" />
-                        </p:panel>
-                        <p:panel id="knightG">
-                            <h:graphicImage library="images/pieces/black" name="knight.png" />
-                        </p:panel>
-                        <p:panel id="bishopC">
-                            <h:graphicImage library="images/pieces/black" name="bishop.png" />
-                        </p:panel>
-                        <p:panel id="bishopF">
-                            <h:graphicImage library="images/pieces/black" name="bishop.png" />
-                        </p:panel>
-                        <p:panel id="QueenD">
-                            <h:graphicImage library="images/pieces/black" name="queen.png" />
-                        </p:panel>
-                        <p:panel id="kingE">
-                            <h:graphicImage library="images/pieces/black" name="king.png" />
-                        </p:panel>
-                    </p:dashboard>
+                    <p:outputPanel id="restrictPanel" layout="block" styleClass="board">
+                        <!--White Pieces-->
+                        <p:graphicImage id="wpA" style="position: absolute; left:0px; top:300px;" library="images/pieces/white/" name="pawn.png"/>
+                        <p:graphicImage id="wpB" style="position: absolute; left:50px; top:300px;" library="images/pieces/white/" name="pawn.png"/>
+                        <p:graphicImage id="wpC" style="position: absolute; left:100px; top:300px;" library="images/pieces/white/" name="pawn.png"/>
+                        <p:graphicImage id="wpD" style="position: absolute; left:150px; top:300px;" library="images/pieces/white/" name="pawn.png"/>
+                        <p:graphicImage id="wpE" style="position: absolute; left:200px; top:300px;" library="images/pieces/white/" name="pawn.png"/>
+                        <p:graphicImage id="wpF" style="position: absolute; left:250px; top:300px;" library="images/pieces/white/" name="pawn.png"/>
+                        <p:graphicImage id="wpG" style="position: absolute; left:300px; top:300px;" library="images/pieces/white/" name="pawn.png"/>
+                        <p:graphicImage id="wpH" style="position: absolute; left:350px; top:300px;" library="images/pieces/white/" name="pawn.png"/>
+                        <p:graphicImage id="wrA" style="position: absolute; left:0px; top:350px;" library="images/pieces/white/" name="rook.png"/>
+                        <p:graphicImage id="wnB" style="position: absolute; left:50px; top:350px;" library="images/pieces/white/" name="knight.png"/>
+                        <p:graphicImage id="wbC" style="position: absolute; left:100px; top:350px;" library="images/pieces/white/" name="bishop.png"/>
+                        <p:graphicImage id="wqD" style="position: absolute; left:150px; top:350px;" library="images/pieces/white/" name="queen.png"/>
+                        <p:graphicImage id="wkE" style="position: absolute; left:200px; top:350px;" library="images/pieces/white/" name="king.png"/>
+                        <p:graphicImage id="wbF" style="position: absolute; left:250px; top:350px;" library="images/pieces/white/" name="bishop.png"/>
+                        <p:graphicImage id="wnG" style="position: absolute; left:300px; top:350px;" library="images/pieces/white/" name="knight.png"/>
+                        <p:graphicImage id="wrH" style="position: absolute; left:350px; top:350px;" library="images/pieces/white/" name="rook.png"/>
+                        <!--Black Pieces-->
+                        <p:graphicImage id="bpA" style="position: absolute; left:0px; top:50px;" library="images/pieces/black/" name="pawn.png"/>
+                        <p:graphicImage id="bpB" style="position: absolute; left:50px; top:50px;" library="images/pieces/black/" name="pawn.png"/>
+                        <p:graphicImage id="bpC" style="position: absolute; left:100px; top:50px;" library="images/pieces/black/" name="pawn.png"/>
+                        <p:graphicImage id="bpD" style="position: absolute; left:150px; top:50px;" library="images/pieces/black/" name="pawn.png"/>
+                        <p:graphicImage id="bpE" style="position: absolute; left:200px; top:50px;" library="images/pieces/black/" name="pawn.png"/>
+                        <p:graphicImage id="bpF" style="position: absolute; left:250px; top:50px;" library="images/pieces/black/" name="pawn.png"/>
+                        <p:graphicImage id="bpG" style="position: absolute; left:300px; top:50px;" library="images/pieces/black/" name="pawn.png"/>
+                        <p:graphicImage id="bpH" style="position: absolute; left:350px; top:50px;" library="images/pieces/black/" name="pawn.png"/>
+                        <p:graphicImage id="brA" style="position: absolute; left:0px; top:0px;" library="images/pieces/black/" name="rook.png"/>
+                        <p:graphicImage id="bnB" style="position: absolute; left:50px; top:0px;" library="images/pieces/black/" name="knight.png"/>
+                        <p:graphicImage id="bbC" style="position: absolute; left:100px; top:0px;" library="images/pieces/black/" name="bishop.png"/>
+                        <p:graphicImage id="bqD" style="position: absolute; left:150px; top:0px;" library="images/pieces/black/" name="queen.png"/>
+                        <p:graphicImage id="bkE" style="position: absolute; left:200px; top:0px;" library="images/pieces/black/" name="king.png"/>
+                        <p:graphicImage id="bbF" style="position: absolute; left:250px; top:0px;" library="images/pieces/black/" name="bishop.png"/>
+                        <p:graphicImage id="bnG" style="position: absolute; left:300px; top:0px;" library="images/pieces/black/" name="knight.png"/>
+                        <p:graphicImage id="brH" style="position: absolute; left:350px; top:0px;" library="images/pieces/black/" name="rook.png"/>
+                    </p:outputPanel>
+                    <!--White Pieces-->
+                    <p:draggable for="wpA" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="wpB" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="wpC" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="wpD" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="wpE" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="wpF" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="wpG" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="wpH" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="wrA" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="wnB" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="wbC" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="wqD" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="wkE" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="wbF" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="wnG" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="wrH" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <!--Black Pieces-->
+                    <p:draggable for="bpA" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="bpB" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="bpC" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="bpD" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="bpE" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="bpF" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="bpG" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="bpH" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="brA" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="bnB" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="bbC" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="bqD" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="bkE" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="bbF" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="bnG" grid="50,50" opacity="0.5" containment="parent" revert="false" />
+                    <p:draggable for="brH" grid="50,50" opacity="0.5" containment="parent" revert="false" />
                 </div>
                 <div id="content_bottom" class="content_bottom">
                     <ui:insert name="content_bottom"></ui:insert>

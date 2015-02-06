@@ -69,6 +69,16 @@
     width: 500px;
 }
 
+.board {
+    background-color: transparent;
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    width: 400px;
+    height: 400px;
+    border: 0px;
+}
+
 #content_bottom {
     position: absolute;
     top: 600px;
