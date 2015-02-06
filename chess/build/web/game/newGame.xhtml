@@ -5,6 +5,8 @@
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:p="http://primefaces.org/ui">
     <ui:define name="content">
+        <ui:param name="nome" value="Jose da Silva"/>
+        <ui:param name="game" value="#{gameBean}"/>
         <h:form>
             <br/>
             <h:panelGrid id="grid" columns="3" cellpadding="2">
@@ -16,7 +18,8 @@
                 <p:inputText id="black" value="#{gameBean.selectedBlackPlayer}" required="true" />
                 <p:message for="black" display="Black's name is required!!!" />
             </h:panelGrid>
-            <br/><p:commandButton id="start" value="Start" update="grid" action="#{gameBean.start()}" />
+            <br/>
+            <p:commandButton id="setUp" value="Set Up" update="grid" action="#{gameBean.start()}" />
         </h:form>
     </ui:define>
 </ui:composition>

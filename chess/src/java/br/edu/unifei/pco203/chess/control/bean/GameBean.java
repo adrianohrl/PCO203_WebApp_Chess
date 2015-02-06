@@ -12,7 +12,7 @@ import br.edu.unifei.pco203.chess.model.Game;
 import br.edu.unifei.pco203.chess.model.Player;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.SessionScoped;
 import javax.persistence.EntityManager;
 
 /**
@@ -20,7 +20,7 @@ import javax.persistence.EntityManager;
  * @author adriano
  */
 @ManagedBean
-@ViewScoped
+@SessionScoped
 public class GameBean {
 
     private final EntityManager em = DataSource.createEntityManager();
@@ -30,6 +30,14 @@ public class GameBean {
     private List<String> playersList = playerDAO.findAllNames();
     private String selectedWhitePlayer;
     private String selectedBlackPlayer;
+    
+    public String clear() {
+        game = new Game();
+        playersList = playerDAO.findAllNames();
+        selectedWhitePlayer = null;
+        selectedBlackPlayer = null;
+        return "/index";
+    }
     
     public String start() {
         if (selectedWhitePlayer == null || selectedBlackPlayer == null) {
@@ -42,18 +50,15 @@ public class GameBean {
         gameDAO.createFullfilledGame(game);
         return "/board/play";
     }
-    
+
     public String checkMate() {
-        if (game == null) {
-            return "";
-        }
         game.checkMate();
         gameDAO.update(game);
         return "/index";
     }
-    
+
     public String update() {
-        
+
         return "/index";
     }
 
@@ -88,5 +93,5 @@ public class GameBean {
     public void setSelectedBlackPlayer(String selectedBlackPlayer) {
         this.selectedBlackPlayer = selectedBlackPlayer;
     }
-    
+
 }

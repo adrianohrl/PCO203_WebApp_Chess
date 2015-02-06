@@ -2,6 +2,14 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/home/adriano/Documents/PCO203/Chess/chess/web/board/play.xhtml</file>
+            <file>file:/home/adriano/Documents/PCO203/Chess/chess/src/java/br/edu/unifei/pco203/chess/control/dao/PlayerDAO.java</file>
+            <file>file:/home/adriano/Documents/PCO203/Chess/chess/src/java/br/edu/unifei/pco203/chess/model/Game.java</file>
+            <file>file:/home/adriano/Documents/PCO203/Chess/chess/src/java/br/edu/unifei/pco203/chess/control/bean/GameBean.java</file>
+            <file>file:/home/adriano/Documents/PCO203/Chess/chess/web/template.xhtml</file>
+            <file>file:/home/adriano/Documents/PCO203/Chess/chess/src/java/br/edu/unifei/pco203/chess/model/Player.java</file>
+            <file>file:/home/adriano/Documents/PCO203/Chess/chess/web/game/newGame.xhtml</file>
+        </group>
     </open-files>
 </project-private>

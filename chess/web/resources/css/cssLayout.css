@@ -35,19 +35,7 @@
     width: 250px;
 }
 
-.center_content {
-    position: relative;
-    background-color: #dddddd;
-    padding: 5px;
-}
-
-.left_content {
-    background-color: #dddddd;
-    padding: 5px;
-    margin-left: 170px;
-}
-
-.right_content {
+#content {
     background-image: url("../images/context.png");
     position: absolute;
     top: 170px;
@@ -55,6 +43,48 @@
     height: 700px;
     width: 1280px;
 }
+
+#content_left {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 700px;
+    width: 390px;
+}
+
+#content_top {
+    position: absolute;
+    top: 0px;
+    left: 390px;
+    height: 100px;
+    width: 500px;
+}
+
+#content_center {
+    background-image: url("../images/board.png");
+    position: absolute;
+    top: 100px;
+    left: 390px;
+    height: 500px;
+    width: 500px;
+}
+
+#content_bottom {
+    position: absolute;
+    top: 600px;
+    left: 390px;
+    height: 100px;
+    width: 500px;
+}
+
+#content_right {
+    position: absolute;
+    top: 0px;
+    left: 890px;
+    height: 700px;
+    width: 390px;
+}
+
 
 #top a:link, #top a:visited {
   color: white;

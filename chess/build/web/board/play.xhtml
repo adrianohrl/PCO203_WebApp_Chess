@@ -6,9 +6,8 @@
                 xmlns:p="http://primefaces.org/ui">
     <ui:define name="content">
         <h:form>
-            <p:graphicImage id="pic" library="images" name="board.png" />
-            <p:draggable for="pic" />
-            <h:commandButton id="gameOver" value="Game Over!!!" action="#{gameBean.checkMate()}" />
+            <ui:include src="/board/board.xhtml"/>
+            <p:commandButton id="finish" value="Finish" action="#{gameBean.checkMate()}" />
         </h:form>
     </ui:define>
 </ui:composition>
