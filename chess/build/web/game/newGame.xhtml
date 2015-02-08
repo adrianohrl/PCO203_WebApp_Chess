@@ -10,11 +10,11 @@
         <h:form>
             <br/>
             <h:panelGrid id="grid" columns="3" cellpadding="2">
-                <p:outputLabel for="white" value="White Player:" />
+                <p:outputLabel for="white" value="White Player:" styleClass="label" />
                 <p:inputText id="white" value="#{gameBean.selectedWhitePlayer}" required="true" />
                 <p:message for="white" display="White's name is required!!!" />
 
-                <p:outputLabel for="black" value="Black Player:" />
+                <p:outputLabel for="black" value="Black Player:" styleClass="label" />
                 <p:inputText id="black" value="#{gameBean.selectedBlackPlayer}" required="true" />
                 <p:message for="black" display="Black's name is required!!!" />
             </h:panelGrid>

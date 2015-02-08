@@ -3,13 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.edu.unifei.pco203.chess.control.bean.create;
+package br.edu.unifei.pco203.chess.control.bean;
 
 import br.edu.unifei.pco203.chess.control.dao.DataSource;
 import br.edu.unifei.pco203.chess.control.dao.SetOfPiecesDAO;
 import br.edu.unifei.pco203.chess.model.SetOfPieces;
+import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 import javax.persistence.EntityManager;
 
 /**
@@ -17,8 +18,8 @@ import javax.persistence.EntityManager;
  * @author adriano
  */
 @ManagedBean
-@RequestScoped
-public class SetOfPiecesCreateBean {
+@SessionScoped
+public class SetOfPiecesBean implements Serializable {
 
     private final EntityManager em = DataSource.createEntityManager();
     private final SetOfPiecesDAO setDAO = new SetOfPiecesDAO(em);

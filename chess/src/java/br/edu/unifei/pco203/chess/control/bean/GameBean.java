@@ -9,10 +9,15 @@ import br.edu.unifei.pco203.chess.control.dao.DataSource;
 import br.edu.unifei.pco203.chess.control.dao.GameDAO;
 import br.edu.unifei.pco203.chess.control.dao.PlayerDAO;
 import br.edu.unifei.pco203.chess.model.Game;
+import br.edu.unifei.pco203.chess.model.GameException;
+import br.edu.unifei.pco203.chess.model.Movement;
 import br.edu.unifei.pco203.chess.model.Player;
+import java.io.Serializable;
 import java.util.List;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 
 /**
@@ -21,24 +26,28 @@ import javax.persistence.EntityManager;
  */
 @ManagedBean
 @SessionScoped
-public class GameBean {
+public class GameBean implements Serializable {
 
     private final EntityManager em = DataSource.createEntityManager();
     private final GameDAO gameDAO = new GameDAO(em);
     private final PlayerDAO playerDAO = new PlayerDAO(em);
+    private BoardBean boardBean = new BoardBean();
     private Game game = new Game();
     private List<String> playersList = playerDAO.findAllNames();
     private String selectedWhitePlayer;
     private String selectedBlackPlayer;
-    
+    private String playerTurn;
+    private String movementCode;
+
     public String clear() {
         game = new Game();
         playersList = playerDAO.findAllNames();
         selectedWhitePlayer = null;
         selectedBlackPlayer = null;
+        playerTurn = null;
         return "/index";
     }
-    
+
     public String start() {
         if (selectedWhitePlayer == null || selectedBlackPlayer == null) {
             return "";
@@ -47,19 +56,32 @@ public class GameBean {
         Player black = playerDAO.createPlayer(selectedBlackPlayer);
         game = new Game(white, black);
         game.getStarted();
-        gameDAO.createFullfilledGame(game);
+        boardBean = new BoardBean(this);
+        playerTurn = game.getPlayerTurn().getName();
+        //gameDAO.createFullfilledGame(game);
         return "/board/play";
     }
 
     public String checkMate() {
         game.checkMate();
-        gameDAO.update(game);
+        gameDAO.createFullfilledGame(game);
         return "/index";
     }
 
     public String update() {
-
-        return "/index";
+        try {
+            Movement movement = Movement.process(movementCode, game);
+            game.move(movement);
+        } catch (GameException e) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage("Wrong Movement Code", e.getMessage()));
+            movementCode = "";
+            return "";
+        }
+        playerTurn = game.getPlayerTurn().getName();
+        movementCode = "";
+        boardBean = new BoardBean(this);
+        return "";
     }
 
     public Game getGame() {
@@ -92,6 +114,30 @@ public class GameBean {
 
     public void setSelectedBlackPlayer(String selectedBlackPlayer) {
         this.selectedBlackPlayer = selectedBlackPlayer;
+    }
+
+    public BoardBean getBoardBean() {
+        return boardBean;
+    }
+
+    public void setBoardBean(BoardBean boardBean) {
+        this.boardBean = boardBean;
+    }
+
+    public String getPlayerTurn() {
+        return playerTurn;
+    }
+
+    public void setPlayerTurn(String playerTurn) {
+        this.playerTurn = playerTurn;
+    }
+
+    public String getMovementCode() {
+        return movementCode;
+    }
+
+    public void setMovementCode(String movementCode) {
+        this.movementCode = movementCode;
     }
 
 }

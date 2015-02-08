@@ -5,11 +5,14 @@
  */
 package br.edu.unifei.pco203.chess.model;
 
+import br.edu.unifei.pco203.chess.control.dao.DataSource;
+import br.edu.unifei.pco203.chess.control.dao.PlayerDAO;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -52,12 +55,19 @@ public class Game implements Serializable {
     public Game(Player white, Player black) {
         this.white = white;
         this.black = black;
+        /*EntityManager em = DataSource.createEntityManager();
+        PlayerDAO playerDAO = new PlayerDAO(em);
+        winner = playerDAO.createPlayer("NOBODY");*/
     }
 
     public void getStarted() {
         if (startDate != null) {
             return;
         }
+        white.setLastGame(this);
+        //white.getPlayedGames().add(this);
+        black.setLastGame(this);
+        //black.getPlayedGames().add(this);
         board = new Board();
         board.setup();
         startDate = new GregorianCalendar();
@@ -86,6 +96,45 @@ public class Game implements Serializable {
         movement.move();
         set.getMovements().add(movement);
         toggle();
+    }
+    
+    public void move(Movement movement) throws GameException {
+        Piece piece = movement.getPiece();
+        if (piece.isWhiteSet() != whiteTurn) {
+            String message = "It is ";
+            if (whiteTurn) {
+                message += white.getName();//"White";
+            } else {
+                message += black.getName();//"Black";
+            }
+            message += "'s turn!!!";
+            throw new GameException(message);
+        }
+        movement.move();
+        SetOfPieces set;
+        if (whiteTurn) {
+            set = board.getWhiteSet();
+        } else {
+            set = board.getBlackSet();
+        }
+        set.getMovements().add(movement);
+        toggle();
+    }
+    
+    public Player getPlayerTurn() {
+        if (whiteTurn) {
+            return white;
+        } else {
+            return black;
+        }
+    }
+    
+    public SetOfPieces getSetTurn() {
+        if (whiteTurn) {
+            return board.getWhiteSet();
+        } else {
+            return board.getBlackSet();
+        }
     }
 
     private void toggle() {
@@ -119,9 +168,21 @@ public class Game implements Serializable {
     public boolean isFinished() {
         return endDate != null;
     }
-    
+
     public boolean isPaused() {
         return pauseDate != null;
+    }
+
+    public int compareTo(Game anotherGame) {
+        if (pauseDate != null) {
+            return pauseDate.compareTo(anotherGame.getPauseDate());
+        } else {
+            return startDate.compareTo(anotherGame.getStartDate());
+        }
+    }
+
+    public boolean hasPlayed(Player player) {
+        return white.equals(player) || black.equals(player);
     }
 
     @Override

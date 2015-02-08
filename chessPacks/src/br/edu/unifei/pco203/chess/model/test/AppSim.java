@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.edu.unifei.pco203.chess.model;
+package br.edu.unifei.pco203.chess.model.test;
 
+import br.edu.unifei.pco203.chess.model.*;
 import br.edu.unifei.pco203.chess.control.dao.DataSource;
 import br.edu.unifei.pco203.chess.control.dao.GameDAO;
 import br.edu.unifei.pco203.chess.control.dao.PlayerDAO;
@@ -25,11 +26,11 @@ public class AppSim {
         Scanner scan = new Scanner(System.in);
 
         System.out.println("Enter the white player name: ");
-        String whiteName = scan.nextLine();
+        String whiteName = "Adriano";//scan.nextLine();
         Player white = AppSim.createPlayer(whiteName);
 
         System.out.println("Enter the black player name: ");
-        String blackName = scan.nextLine();
+        String blackName = "Mônica";//scan.nextLine();
         Player black = AppSim.createPlayer(blackName);
 
         Game game = new Game(white, black);
@@ -44,31 +45,11 @@ public class AppSim {
 
         Iterator<String> it = AppSim.testCastling();
         while (!game.isFinished()) {
-            SetOfPieces set;
-            Player player;
-            if (game.isWhiteTurn()) {
-                player = white;
-                set = board.getWhiteSet();
-            } else {
-                player = black;
-                set = board.getBlackSet();
-            }
-            System.out.println(player.getName() + ", enter the next movement: ");
-            String movement = it.next();//scan.nextLine();
+            System.out.println(game.getPlayerTurn() + ", enter the next movement: ");
+            String code = it.next();//scan.nextLine();
             try {
-                Piece piece = Movement.processCode(set, movement);
-                char desiredRank;
-                char desiredFile;
-                if (movement.length() == 4) {
-                    desiredRank = movement.charAt(2);
-                    desiredFile = movement.charAt(3);
-                } else if (movement.length() == 5) {
-                    desiredRank = movement.charAt(3);
-                    desiredFile = movement.charAt(4);
-                } else {
-                    continue;
-                }
-                game.move(piece, desiredRank, desiredFile);
+                Movement movement = Movement.process(code, game);
+                game.move(movement);
                 clock.toggle();
             } catch (GameException e) {
                 System.out.println(e.getMessage());
@@ -86,6 +67,10 @@ public class AppSim {
         GameDAO gameDAO = new GameDAO(em);
         gameDAO.createFullfilledGame(game);
         AppSim.displayMovements(board);
+        
+        System.out.println("-------------- White Games White Won --------------");
+        PlayerDAO playerDAO = new PlayerDAO(em);
+        System.out.println(playerDAO.findAllWonGames(white));
         
         em.close();
         DataSource.closeEntityManagerFactory();
@@ -174,16 +159,16 @@ public class AppSim {
 
     private static Iterator<String> testCastling() {
         List<String> moves = new ArrayList<>();
-        moves.add("ng3f");/*w*/ moves.add("nb6c");//b
-        moves.add("pg3g");/*w*/ moves.add("pd6d");//b
-        moves.add("bf2g");/*w*/ moves.add("bc3h");//b
-        moves.add("pe4e");/*w*/ moves.add("qd7d");//b
-        moves.add("k12e");/*w*/ moves.add("ra8d");//b
-        moves.add("k21e");/*w*/ moves.add("rd8a");//b
-        moves.add("k11c");//w
-        moves.add("k11g");//w
-        moves.add("pa3a");/*w*/ moves.add("k88g");//b
-        moves.add("k88c");//b
+        moves.add("n1g3f");/*w*/ moves.add("n8b6c");//b
+        moves.add("p2g3g");/*w*/ moves.add("p7d6d");//b
+        moves.add("b1f2g");/*w*/ moves.add("b8c3h");//b
+        moves.add("p2e4e");/*w*/ moves.add("q8d7d");//b
+        moves.add("k1e2e");/*w*/ moves.add("r8a8d");//b
+        moves.add("k2e1e");/*w*/ moves.add("r8d8a");//b
+        moves.add("k1e1c");//w
+        moves.add("k1e1g");//w
+        moves.add("p2a3a");/*w*/ moves.add("k8e8g");//b
+                                 moves.add("k8e8c");//b
         return moves.iterator();
     }
 

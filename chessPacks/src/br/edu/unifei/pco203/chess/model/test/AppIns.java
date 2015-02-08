@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.edu.unifei.pco203.chess.model;
+package br.edu.unifei.pco203.chess.model.test;
 
 import javax.persistence.EntityManager;
 import br.edu.unifei.pco203.chess.control.dao.*;
+import br.edu.unifei.pco203.chess.model.*;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -72,7 +73,7 @@ public class AppIns {
         gDAO.update(game1);
         gDAO.update(game2);
         PlayerDAO pDAO = new PlayerDAO(em);
-        System.out.println(pDAO.findAllWonGame(white));
+        System.out.println(pDAO.findAllWonGames(white));
         
         em.close();
         System.exit(0);

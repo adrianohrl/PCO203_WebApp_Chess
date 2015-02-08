@@ -111,6 +111,37 @@ public class Movement implements Serializable {
         return king != null && !king.isMovedBefore() && Math.abs(currentFile - nextFile) == 2; /////////////////////////////////
     }
 ///////////////////////////////////////////////////////////////////////////////////////
+    public static Movement process(String code, Game game) throws GameException {
+        if (code.length() != 5) {
+            throw new GameException("Invalid movement code length!!!");
+        }
+        SetOfPieces set = game.getSetTurn();
+        Piece piece = null;
+        switch (Character.toLowerCase(code.charAt(0))) {
+            case 'b':
+                    piece = set.getBishop(code.charAt(1), code.charAt(2));
+                break;
+            case 'k':
+                    piece = set.getKing(code.charAt(1), code.charAt(2));
+                break;
+            case 'n':
+                    piece = set.getKnight(code.charAt(1), code.charAt(2));
+                break;
+            case 'p':
+                    piece = set.getPawn(code.charAt(1), code.charAt(2));
+                break;
+            case 'q':
+                    piece = set.getQueen(code.charAt(1), code.charAt(2));
+                break;
+            case 'r':
+                    piece = set.getRook(code.charAt(1), code.charAt(2));
+                break;
+            default:
+                throw new GameException("Invalid piece code!!!");
+        }
+        return new Movement(code.charAt(3), code.charAt(4), piece, game.getPlayerTurn(), game);
+    }
+    
     public static Piece processCode(SetOfPieces set, String movement) throws GameException {
         if (movement.length() < 4) {
             throw new GameException("Invalid movement code, too small!!!");

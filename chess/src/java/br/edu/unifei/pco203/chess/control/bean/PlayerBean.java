@@ -10,6 +10,7 @@ import br.edu.unifei.pco203.chess.control.dao.GameDAO;
 import br.edu.unifei.pco203.chess.control.dao.PlayerDAO;
 import br.edu.unifei.pco203.chess.model.Game;
 import br.edu.unifei.pco203.chess.model.Player;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
@@ -22,7 +23,7 @@ import javax.persistence.EntityManager;
  */
 @ManagedBean
 @ViewScoped
-public class PlayerBean {
+public class PlayerBean implements Serializable {
 
     private final EntityManager em = DataSource.createEntityManager();
     private final PlayerDAO playerDAO = new PlayerDAO(em);

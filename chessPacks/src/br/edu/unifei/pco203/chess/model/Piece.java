@@ -108,8 +108,6 @@ public abstract class Piece implements Serializable {
         piece.setWhiteSet(whiteSet);
         return piece;
     }
-    
-    
 
     public int getCode() {
         return code;

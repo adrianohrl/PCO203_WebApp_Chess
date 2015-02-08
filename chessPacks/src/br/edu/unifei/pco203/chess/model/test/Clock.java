@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.edu.unifei.pco203.chess.model;
+package br.edu.unifei.pco203.chess.model.test;
 
+import br.edu.unifei.pco203.chess.model.Game;
+import br.edu.unifei.pco203.chess.model.Player;
 import java.io.Serializable;
 import org.apache.commons.lang3.time.StopWatch;
 

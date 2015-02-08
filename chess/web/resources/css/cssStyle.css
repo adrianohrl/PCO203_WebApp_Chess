@@ -1,7 +1,33 @@
-.panelTransparent.ui-panel {
+.panelNoBorder, .panelNoBorder tr, .panelNoBorder td {
+    background-color: hsla(120, 100%, 75%, 0.2);
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 500px;
+    height: 500px;
+    //border: hidden;
+    //border-color: transparent;
+}
+
+.slot {
     background-color: transparent;
-    border-radius: 0;  
-    border: 0;  
-    width:50px;
-    height:50px;
+    width: 50px;
+    height: 50px;
+    border: hidden;
+    border-color: transparent;
+}
+
+.slotActive {
+    background-color: hsla(120, 100%, 75%, 0.2);
+    width: 50px;
+    height: 50px;
+    border: hidden;
+    border-color: transparent;
+}
+
+.label {
+    font-size: 20px;
+    font-family: Verdana, "Verdana CE",  Arial, "Arial CE", "Lucida Grande CE", lucida, "Helvetica CE", sans-serif;
+    color: #ffffff;  
+    margin: 10px;
 }
