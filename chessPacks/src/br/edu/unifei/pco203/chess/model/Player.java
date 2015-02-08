@@ -6,13 +6,9 @@
 package br.edu.unifei.pco203.chess.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-
 /**
  *
  * @author adriano
@@ -24,8 +20,6 @@ public class Player implements Serializable {
     private String name;
     @ManyToOne
     private Game lastGame;
-    @OneToMany
-    private List<Game> playedGames = new ArrayList<>();
 
     public Player() {
 
@@ -41,8 +35,8 @@ public class Player implements Serializable {
     }
     
     @Override
-    public Player clone() throws CloneNotSupportedException {
-        Player player = (Player) super.clone();
+    public Player clone() {
+        Player player = new Player();
         player.setName(name);
         return player;
     }
@@ -61,14 +55,6 @@ public class Player implements Serializable {
 
     public void setLastGame(Game lastGame) {
         this.lastGame = lastGame;
-    }
-
-    public List<Game> getPlayedGames() {
-        return playedGames;
-    }
-
-    public void setPlayedGames(List<Game> playedGames) {
-        this.playedGames = playedGames;
     }
 
 }

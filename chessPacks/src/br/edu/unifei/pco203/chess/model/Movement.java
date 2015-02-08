@@ -85,12 +85,12 @@ public class Movement implements Serializable {
         }
     }
 
-    private boolean isValid() {
+    public boolean isValid() {
         return piece.isValidMovement(nextRank, nextFile);
     }
 
     private boolean isCaptureMovement() {
-        return game.getBoard().isThereAnyOpponentPieceAt(nextRank, nextFile, piece) || isEnPassantCaptureMovement();
+        return piece.getBoard().isThereAnyOpponentPieceAt(nextRank, nextFile, piece) || isEnPassantCaptureMovement();
     }
 
     private boolean isEnPassantCaptureMovement() {
@@ -98,19 +98,19 @@ public class Movement implements Serializable {
         if (piece instanceof Pawn) {
             pawn = (Pawn) piece;
         }
-        Board board = game.getBoard();
+        Board board = piece.getBoard();
         return pawn != null && pawn.isEnPassantAllowed() && board.isThereAnyOpponentPawnAt(currentRank, nextFile, piece)
                 && !board.isThereAnyPieceAt(nextRank, nextFile);
     }
-////////////////////////////////////////////////////////////////////////////////////
+
     private boolean isCastlingMovement() {
         King king = null;
         if (piece instanceof King) {
             king = (King) piece;
         }
-        return king != null && !king.isMovedBefore() && Math.abs(currentFile - nextFile) == 2; /////////////////////////////////
+        return king != null && !king.isMovedBefore() && Math.abs(currentFile - nextFile) == 2;
     }
-///////////////////////////////////////////////////////////////////////////////////////
+
     public static Movement process(String code, Game game) throws GameException {
         if (code.length() != 5) {
             throw new GameException("Invalid movement code length!!!");
@@ -119,29 +119,29 @@ public class Movement implements Serializable {
         Piece piece = null;
         switch (Character.toLowerCase(code.charAt(0))) {
             case 'b':
-                    piece = set.getBishop(code.charAt(1), code.charAt(2));
+                piece = set.getBishop(code.charAt(1), code.charAt(2));
                 break;
             case 'k':
-                    piece = set.getKing(code.charAt(1), code.charAt(2));
+                piece = set.getKing(code.charAt(1), code.charAt(2));
                 break;
             case 'n':
-                    piece = set.getKnight(code.charAt(1), code.charAt(2));
+                piece = set.getKnight(code.charAt(1), code.charAt(2));
                 break;
             case 'p':
-                    piece = set.getPawn(code.charAt(1), code.charAt(2));
+                piece = set.getPawn(code.charAt(1), code.charAt(2));
                 break;
             case 'q':
-                    piece = set.getQueen(code.charAt(1), code.charAt(2));
+                piece = set.getQueen(code.charAt(1), code.charAt(2));
                 break;
             case 'r':
-                    piece = set.getRook(code.charAt(1), code.charAt(2));
+                piece = set.getRook(code.charAt(1), code.charAt(2));
                 break;
             default:
                 throw new GameException("Invalid piece code!!!");
         }
         return new Movement(code.charAt(3), code.charAt(4), piece, game.getPlayerTurn(), game);
     }
-    
+
     public static Piece processCode(SetOfPieces set, String movement) throws GameException {
         if (movement.length() < 4) {
             throw new GameException("Invalid movement code, too small!!!");
@@ -209,10 +209,10 @@ public class Movement implements Serializable {
                 + Character.toUpperCase(nextFile) + "" + Character.toUpperCase(nextRank);
         return string;
     }
-    
+
     @Override
-    public Movement clone() throws CloneNotSupportedException {
-        Movement movement = (Movement) super.clone();
+    public Movement clone() {
+        Movement movement = new Movement();
         movement.setCode(code);
         movement.setCurrentRank(currentRank);
         movement.setCurrentFile(currentFile);

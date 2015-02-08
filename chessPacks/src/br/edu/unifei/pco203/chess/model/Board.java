@@ -184,8 +184,8 @@ public class Board implements Serializable {
     }
     
     @Override
-    public Board clone() throws CloneNotSupportedException {
-        Board board = (Board) super.clone();
+    public Board clone() {
+        Board board = new Board();
         board.setCode(code);
         board.setWhiteSet(whiteSet.clone());
         board.getWhiteSet().setBoard(board);

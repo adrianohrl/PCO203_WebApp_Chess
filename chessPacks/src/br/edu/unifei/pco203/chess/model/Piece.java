@@ -100,14 +100,7 @@ public abstract class Piece implements Serializable {
     }
 
     @Override
-    protected Piece clone() throws CloneNotSupportedException {
-        Piece piece = (Piece) super.clone();
-        piece.setCode(code);
-        piece.setRank(rank);
-        piece.setFile(file);
-        piece.setWhiteSet(whiteSet);
-        return piece;
-    }
+    protected abstract Piece clone(); 
 
     public int getCode() {
         return code;

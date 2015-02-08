@@ -97,10 +97,13 @@ public class Pawn extends Piece {
         return super.equals(pawn) && atHome == pawn.atHome 
                 && ((enPassantPawn != null && enPassantPawn.equals(pawn.enPassantPawn) || enPassantPawn == pawn.enPassantPawn));
     }
-    
+
     @Override
-    public Pawn clone() throws CloneNotSupportedException {
-        Pawn pawn = (Pawn) super.clone();
+    public Pawn clone() {
+        Pawn pawn = new Pawn();
+        pawn.setCode(getCode());
+        pawn.setRank(getRank());
+        pawn.setFile(getFile());
         pawn.setAtHome(atHome);
         if (enPassantPawn != null) {
             pawn.setEnPassantPawn(enPassantPawn.clone());

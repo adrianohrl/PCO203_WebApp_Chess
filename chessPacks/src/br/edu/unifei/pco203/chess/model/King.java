@@ -5,6 +5,7 @@
  */
 package br.edu.unifei.pco203.chess.model;
 
+import java.util.List;
 import javax.persistence.Entity;
 
 /**
@@ -88,7 +89,30 @@ public class King extends Piece {
     }
 
     private boolean isInCheck() {
-        return false; /////////////////////////
+        List<Piece> opponentPieces = getBoard().getOpponentSet(this).getPieces();
+        for (Piece opponentPiece : opponentPieces) {
+            try {
+            Movement movement = new Movement(getRank(), getFile(), opponentPiece, null, null);
+            if (isInCheck(movement)) {
+                return true;
+            }
+            } catch (GameException e) {
+            }
+        }
+        return false;
+    }
+
+    public boolean isInCheck(Movement lastMovement) {
+        Piece piece = lastMovement.getPiece();
+        Game game = lastMovement.getGame();
+        try {
+            Movement checkMovement = new Movement(getRank(), getFile(), piece, null, null);
+            if (checkMovement.isValid()) {
+                return true;
+            }
+        } catch (GameException e) {
+        }
+        return false;
     }
 
     private boolean willBeInCheckAt(char rank, char file) {
@@ -114,9 +138,13 @@ public class King extends Piece {
     }
 
     @Override
-    public King clone() throws CloneNotSupportedException {
-        King king = (King) super.clone();
-        king.setMovedBefore(movedBefore);
+    public King clone() {
+        King king = new King();
+        king.setCode(getCode());
+        king.setRank(getRank());
+        king.setFile(getFile());
+        king.setWhiteSet(isWhiteSet());
+        king.setMovedBefore(isMovedBefore());
         return king;
     }
 

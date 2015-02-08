@@ -43,7 +43,7 @@ public class AppSim {
         System.out.println("---------------------------------");
         AppSim.printBoard(board);
 
-        Iterator<String> it = AppSim.testCastling();
+        Iterator<String> it = AppSim.testCheck();
         while (!game.isFinished()) {
             System.out.println(game.getPlayerTurn() + ", enter the next movement: ");
             String code = it.next();//scan.nextLine();
@@ -51,10 +51,18 @@ public class AppSim {
                 Movement movement = Movement.process(code, game);
                 game.move(movement);
                 clock.toggle();
+                AppSim.printBoard(board);
+                King opponentKing = board.getOpponentSet(movement.getPiece()).getKings().get(0);
+                if (opponentKing.isInCheck(movement)) {
+                    String kingColor = "Black ";
+                    if (opponentKing.isWhiteSet()) {
+                        kingColor = "White ";
+                    }
+                    System.out.println(kingColor + "king in check!!!");
+                }
             } catch (GameException e) {
                 System.out.println(e.getMessage());
             }
-            AppSim.printBoard(board);
             if (!it.hasNext()) {
                 game.checkMate();
                 clock.gameOver();
@@ -62,16 +70,16 @@ public class AppSim {
         }
         System.out.println("Game Over!!!");
         System.out.println("-------------------- Movements --------------------");
-        
+
         EntityManager em = DataSource.createEntityManager();
         GameDAO gameDAO = new GameDAO(em);
         gameDAO.createFullfilledGame(game);
         AppSim.displayMovements(board);
-        
+
         System.out.println("-------------- White Games White Won --------------");
         PlayerDAO playerDAO = new PlayerDAO(em);
         System.out.println(playerDAO.findAllWonGames(white));
-        
+
         em.close();
         DataSource.closeEntityManagerFactory();
     }
@@ -168,7 +176,17 @@ public class AppSim {
         moves.add("k1e1c");//w
         moves.add("k1e1g");//w
         moves.add("p2a3a");/*w*/ moves.add("k8e8g");//b
-                                 moves.add("k8e8c");//b
+        moves.add("k8e8c");//b
+        return moves.iterator();
+    }
+
+    private static Iterator<String> testCheck() {
+        List<String> moves = new ArrayList<>();
+        moves.add("p2e3e");/*w*/ moves.add("p7a6a");//b
+        moves.add("q1d3f");/*w*/ moves.add("p6a5a");//b
+        moves.add("b1f4c");/*w*/ moves.add("p5a4a");//b
+        moves.add("q3f7f");/*w*/
+
         return moves.iterator();
     }
 
