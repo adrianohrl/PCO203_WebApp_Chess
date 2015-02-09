@@ -103,7 +103,11 @@ public class Game implements Serializable {
         }
         pauseDate = new GregorianCalendar();
         endDate = new GregorianCalendar();
-        winner = getPlayerTurn();
+        if (whiteTurn) {
+            winner = black;
+        } else {
+            winner = white;
+        }
     }
     
     public void pause() {

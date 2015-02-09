@@ -5,14 +5,11 @@
  */
 package br.edu.unifei.pco203.chess.model;
 
-import br.edu.unifei.pco203.chess.control.dao.DataSource;
-import br.edu.unifei.pco203.chess.control.dao.PlayerDAO;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -36,9 +33,6 @@ public class Game implements Serializable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Calendar endDate;
     private boolean whiteTurn = true;
-    private float lastingTime = 1800;
-    private float whiteElapsedTime;
-    private float blackElapsedTime;
     @OneToOne
     private Board board;
     @OneToOne
@@ -55,9 +49,6 @@ public class Game implements Serializable {
     public Game(Player white, Player black) {
         this.white = white;
         this.black = black;
-        /*EntityManager em = DataSource.createEntityManager();
-        PlayerDAO playerDAO = new PlayerDAO(em);
-        winner = playerDAO.createPlayer("NOBODY");*/
     }
 
     public void getStarted() {
@@ -65,59 +56,24 @@ public class Game implements Serializable {
             return;
         }
         white.setLastGame(this);
-        //white.getPlayedGames().add(this);
         black.setLastGame(this);
-        //black.getPlayedGames().add(this);
         board = new Board();
         board.setup();
         startDate = new GregorianCalendar();
     }
 
     public void move(Piece piece, char desiredRank, char desiredFile) throws GameException {
-        if (piece.isWhiteSet() != whiteTurn) {
-            String message = "It is ";
-            if (whiteTurn) {
-                message += white.getName();//"White";
-            } else {
-                message += black.getName();//"Black";
-            }
-            message += "'s turn!!!";
-            throw new GameException(message);
-        }
-        Movement movement;
-        SetOfPieces set;
-        if (whiteTurn) {
-            movement = new Movement(desiredRank, desiredFile, piece, white, this);
-            set = board.getWhiteSet();
-        } else {
-            movement = new Movement(desiredRank, desiredFile, piece, black, this);
-            set = board.getBlackSet();
-        }
-        movement.move();
-        set.getMovements().add(movement);
-        toggle();
+        Movement movement = new Movement(desiredRank, desiredFile, piece, getPlayerTurn(), this);
+        move(movement);
     }
     
     public void move(Movement movement) throws GameException {
         Piece piece = movement.getPiece();
         if (piece.isWhiteSet() != whiteTurn) {
-            String message = "It is ";
-            if (whiteTurn) {
-                message += white.getName();//"White";
-            } else {
-                message += black.getName();//"Black";
-            }
-            message += "'s turn!!!";
-            throw new GameException(message);
+            throw new GameException("It is " + getPlayerTurn().getName() + "'s turn!!!");
         }
         movement.move();
-        SetOfPieces set;
-        if (whiteTurn) {
-            set = board.getWhiteSet();
-        } else {
-            set = board.getBlackSet();
-        }
-        set.getMovements().add(movement);
+        getSetTurn().getMovements().add(movement);
         toggle();
     }
     
@@ -145,20 +101,17 @@ public class Game implements Serializable {
         if (endDate != null) {
             return;
         }
+        pauseDate = new GregorianCalendar();
         endDate = new GregorianCalendar();
         if (whiteTurn) {
-            blackWon();
+            winner = black;
         } else {
-            whiteWon();
+            winner = white;
         }
     }
-
-    private void whiteWon() {
-        winner = white;
-    }
-
-    private void blackWon() {
-        winner = black;
+    
+    public void pause() {
+        pauseDate = new GregorianCalendar();
     }
 
     private void draw() {
@@ -251,30 +204,6 @@ public class Game implements Serializable {
 
     public void setWhiteTurn(boolean whiteTurn) {
         this.whiteTurn = whiteTurn;
-    }
-
-    public float getLastingTime() {
-        return lastingTime;
-    }
-
-    public void setLastingTime(float lastingTime) {
-        this.lastingTime = lastingTime;
-    }
-
-    public float getWhiteElapsedTime() {
-        return whiteElapsedTime;
-    }
-
-    public void setWhiteElapsedTime(float whiteElapsedTime) {
-        this.whiteElapsedTime = whiteElapsedTime;
-    }
-
-    public float getBlackElapsedTime() {
-        return blackElapsedTime;
-    }
-
-    public void setBlackElapsedTime(float blackElapsedTime) {
-        this.blackElapsedTime = blackElapsedTime;
     }
 
     public Board getBoard() {

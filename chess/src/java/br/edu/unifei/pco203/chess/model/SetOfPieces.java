@@ -119,8 +119,8 @@ public class SetOfPieces implements Serializable {
     }
     
     @Override
-    public SetOfPieces clone() throws CloneNotSupportedException {
-        SetOfPieces set = (SetOfPieces) super.clone();
+    public SetOfPieces clone() {
+        SetOfPieces set = new SetOfPieces();
         set.setCode(code);
         set.setWhiteSet(whiteSet);
         List<Piece> clonedPieces = new ArrayList<>();
@@ -130,7 +130,8 @@ public class SetOfPieces implements Serializable {
         set.setPieces(clonedPieces);
         List<Movement> clonedMovements = new ArrayList<>();
         for (Movement movement : movements) {
-            clonedMovements.add(movement.clone());
+            Movement m = movement.clone();
+            clonedMovements.add(m);
         }
         set.setMovements(clonedMovements);
         return set;

@@ -53,12 +53,12 @@ public class AppSim {
                 clock.toggle();
                 AppSim.printBoard(board);
                 King opponentKing = board.getOpponentSet(movement.getPiece()).getKings().get(0);
-                if (opponentKing.isInCheck(movement)) {
-                    String kingColor = "Black ";
-                    if (opponentKing.isWhiteSet()) {
-                        kingColor = "White ";
-                    }
-                    System.out.println(kingColor + "king in check!!!");
+                /*if (opponentKing.isCheckMate()) {
+                    game.checkMate();
+                    System.out.println("Check Mate!!!");
+                    System.out.println(game.getWinner().getName() + " wins!!!");
+                } else*/ if (opponentKing.isInCheck()) {
+                    System.out.println(game.getPlayerTurn().getName() + "'s king in check!!!");
                 }
             } catch (GameException e) {
                 System.out.println(e.getMessage());
@@ -75,10 +75,6 @@ public class AppSim {
         GameDAO gameDAO = new GameDAO(em);
         gameDAO.createFullfilledGame(game);
         AppSim.displayMovements(board);
-
-        System.out.println("-------------- White Games White Won --------------");
-        PlayerDAO playerDAO = new PlayerDAO(em);
-        System.out.println(playerDAO.findAllWonGames(white));
 
         em.close();
         DataSource.closeEntityManagerFactory();
@@ -184,7 +180,7 @@ public class AppSim {
         List<String> moves = new ArrayList<>();
         moves.add("p2e3e");/*w*/ moves.add("p7a6a");//b
         moves.add("q1d3f");/*w*/ moves.add("p6a5a");//b
-        moves.add("b1f4c");/*w*/ moves.add("p5a4a");//b
+        moves.add("b1f4c");/*w*/ moves.add("p7c6c");//b
         moves.add("q3f7f");/*w*/
 
         return moves.iterator();

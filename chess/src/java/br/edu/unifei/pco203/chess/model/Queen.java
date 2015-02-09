@@ -47,5 +47,15 @@ public class Queen extends Piece {
     public String toString() {
         return this.getClass().getSimpleName() + " " + super.toString();
     }*/
+
+    @Override
+    public Queen clone() {
+        Queen queen = new Queen();
+        queen.setCode(getCode());
+        queen.setRank(getRank());
+        queen.setFile(getFile());
+        queen.setWhiteSet(isWhiteSet());
+        return queen;
+    }
     
 }

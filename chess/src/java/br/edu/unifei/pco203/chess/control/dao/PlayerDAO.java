@@ -26,15 +26,7 @@ public class PlayerDAO extends DAO<Player, String> {
         }
         if (isRegistered(player)) {
             em.persist(player);
-            /*Game lastGame = player.getLastGame();
-            if (lastGame.isFinished()) {
-                GameDAO gameDAO = new GameDAO(em);
-                gameDAO.creatingFullfilledGame(lastGame);
-                for (Game game : player.getPlayedGames()) {
-                    gameDAO.creatingFullfilledGame(game);
-                }
-                em.merge(player);
-            }*/
+            //Game lastGame = player.getLastGame();
         }
     }
 

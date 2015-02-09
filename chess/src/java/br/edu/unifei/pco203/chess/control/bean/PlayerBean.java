@@ -40,7 +40,6 @@ public class PlayerBean implements Serializable {
     
     public String update() {
         player = playerDAO.find(selectedPlayer);
-        List<Game> playedGames = new ArrayList<>();
         Game lastGame = null;
         for (Integer selectedGame : selectedPlayedGames) {
             Game game = gameDAO.find(selectedGame);
@@ -48,10 +47,8 @@ public class PlayerBean implements Serializable {
                 if (lastGame == null || game.compareTo(lastGame) > 0) {
                     lastGame = game;
                 }
-                playedGames.add(game);
             }
         }
-        player.setPlayedGames(playedGames);
         player.setLastGame(lastGame);
         playerDAO.update(player);
         return "/index";

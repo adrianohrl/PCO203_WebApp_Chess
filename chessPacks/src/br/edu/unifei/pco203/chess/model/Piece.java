@@ -28,9 +28,9 @@ public abstract class Piece implements Serializable {
     private Board board;
 
     public Piece() {
-        
+
     }
-    
+
     public Piece(char rank, char file, boolean whiteSet, Board board) throws GameException {
         rank = Character.toLowerCase(rank);
         file = Character.toLowerCase(file);
@@ -75,9 +75,17 @@ public abstract class Piece implements Serializable {
                 return false;
             }
         }
+        /*try {
+            King myKing = board.getMySet(this).getKings().get(0);
+            Movement movement = new Movement(desiredRank, desiredFile, this, null, null);
+            if (myKing.isInCheck(movement)) {
+                return false;
+            }
+        } catch (GameException e) {
+        }*/
         return true;
     }
-    
+
     public void copyFrom(Piece piece) {
         this.rank = piece.rank;
         this.file = piece.file;
@@ -89,18 +97,20 @@ public abstract class Piece implements Serializable {
     public String toString() {
         return "@ " + Character.toUpperCase(this.file) + "" + this.rank;// + " on board: " + board;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         return obj instanceof Piece && this.equals((Piece) obj);
     }
-    
+
     public boolean equals(Piece piece) {
         return piece != null && code == piece.code && rank == piece.rank && file == piece.file && whiteSet == piece.whiteSet;
     }
 
     @Override
-    protected abstract Piece clone(); 
+    protected Piece clone() {
+        return null;
+    }
 
     public int getCode() {
         return code;

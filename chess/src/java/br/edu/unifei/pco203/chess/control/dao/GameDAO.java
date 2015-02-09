@@ -44,4 +44,9 @@ public class GameDAO extends DAO<Game, Integer> {
         return em.createQuery("SELECT g.startDate FROM Game g WHERE g.endDate IS NULL").getResultList();
     }
     
+    public List<Game> findGames(Game game) {
+        return em.createQuery("SELECT g FROM Game g WHERE g.white.name = '" + game.getWhite().getName() 
+                + "' AND g.black.name = '" + game.getBlack().getName() + "'").getResultList();
+    }
+    
 }

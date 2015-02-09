@@ -7,9 +7,11 @@ package br.edu.unifei.pco203.chess.control.bean;
 
 import br.edu.unifei.pco203.chess.control.dao.DataSource;
 import br.edu.unifei.pco203.chess.control.dao.GameDAO;
+import br.edu.unifei.pco203.chess.control.dao.MovementDAO;
 import br.edu.unifei.pco203.chess.control.dao.PlayerDAO;
 import br.edu.unifei.pco203.chess.model.Game;
 import br.edu.unifei.pco203.chess.model.GameException;
+import br.edu.unifei.pco203.chess.model.King;
 import br.edu.unifei.pco203.chess.model.Movement;
 import br.edu.unifei.pco203.chess.model.Player;
 import java.io.Serializable;
@@ -58,23 +60,40 @@ public class GameBean implements Serializable {
         game.getStarted();
         boardBean = new BoardBean(this);
         playerTurn = game.getPlayerTurn().getName();
-        //gameDAO.createFullfilledGame(game);
+        gameDAO.createFullfilledGame(game);
         return "/board/play";
     }
 
     public String checkMate() {
         game.checkMate();
-        gameDAO.createFullfilledGame(game);
+        gameDAO.update(game);
+        return "/index";
+    }
+
+    public String pause() {
+        game.pause();
+        gameDAO.update(game);
         return "/index";
     }
 
     public String update() {
+        FacesContext context = FacesContext.getCurrentInstance();
         try {
             Movement movement = Movement.process(movementCode, game);
             game.move(movement);
+            MovementBean movementBean = new MovementBean();
+            movementBean.setMovement(movement);
+            movementBean.create();
+            gameDAO.update(game);
+            King opponentKing = game.getBoard().getOpponentSet(movement.getPiece()).getKings().get(0);
+            /*if (opponentKing.isCheckMate()) {
+             game.checkMate();
+             context.addMessage(null, new FacesMessage("Check Mate: ", game.getWinner().getName() + " wins!!!"));
+             } else*/ if (opponentKing.isInCheck()) {
+                context.addMessage(null, new FacesMessage("Check", game.getPlayerTurn().getName() + "'s king in check!!!"));
+            }
         } catch (GameException e) {
-            FacesContext context = FacesContext.getCurrentInstance();
-            context.addMessage(null, new FacesMessage("Wrong Movement Code", e.getMessage()));
+            context.addMessage(null, new FacesMessage("Wrong Movement Code:", e.getMessage()));
             movementCode = "";
             return "";
         }
@@ -82,6 +101,29 @@ public class GameBean implements Serializable {
         movementCode = "";
         boardBean = new BoardBean(this);
         return "";
+    }
+
+    public String findGame() {
+        if (selectedWhitePlayer == null || selectedBlackPlayer == null) {
+            return "";
+        }
+        Player white = playerDAO.createPlayer(selectedWhitePlayer);
+        Player black = playerDAO.createPlayer(selectedBlackPlayer);
+        Game desiredGame = new Game(white, black);
+        List<Game> playedGames = gameDAO.findGames(desiredGame);
+        if (playedGames == null || playedGames.isEmpty()) {
+            return "/index";
+        }
+        Game lastGame = playedGames.get(0);
+        for (Game playedGame : playedGames) {
+            if (playedGame.compareTo(lastGame) > 0) {
+                lastGame = playedGame;
+            }
+        }
+        game = lastGame;
+        boardBean = new BoardBean(this);
+        playerTurn = game.getPlayerTurn().getName();
+        return "/board/play";
     }
 
     public Game getGame() {

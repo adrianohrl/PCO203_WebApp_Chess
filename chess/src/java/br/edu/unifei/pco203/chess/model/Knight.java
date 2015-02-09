@@ -46,6 +46,16 @@ public class Knight extends Piece {
         return super.equals(piece) && piece instanceof Knight;
     }
 
+    @Override
+    public Knight clone() {
+        Knight knight = new Knight();
+        knight.setCode(getCode());
+        knight.setRank(getRank());
+        knight.setFile(getFile());
+        knight.setWhiteSet(isWhiteSet());
+        return knight;
+    }
+
     /*@Override
      public String toString() {
      return this.getClass().getSimpleName() + " " + super.toString();

@@ -43,6 +43,15 @@ public class Bishop extends Piece {
         return super.equals(piece) && piece instanceof Bishop;
     }
     
+    public Bishop clone() {
+        Bishop bishop = new Bishop();
+        bishop.setCode(getCode());
+        bishop.setRank(getRank());
+        bishop.setFile(getFile());
+        bishop.setWhiteSet(isWhiteSet());
+        return bishop;
+    }
+    
     /*@Override
     public String toString() {
         return this.getClass().getSimpleName() + " " + super.toString();

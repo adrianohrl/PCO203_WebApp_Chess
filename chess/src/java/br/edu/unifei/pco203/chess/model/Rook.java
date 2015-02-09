@@ -54,11 +54,15 @@ public class Rook extends Piece {
     public boolean equals(Rook rook) {
         return super.equals(rook) && movedBefore == rook.movedBefore;
     }
-    
+
     @Override
-    public Rook clone() throws CloneNotSupportedException {
-        Rook rook = (Rook) super.clone();
-        rook.setMovedBefore(movedBefore);
+    public Rook clone() {
+        Rook rook = new Rook();
+        rook.setCode(getCode());
+        rook.setRank(getRank());
+        rook.setFile(getFile());
+        rook.setWhiteSet(isWhiteSet());
+        rook.setMovedBefore(isMovedBefore());
         return rook;
     }
 

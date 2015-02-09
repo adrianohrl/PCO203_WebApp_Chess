@@ -88,14 +88,14 @@ public class King extends Piece {
         return false; //////////////////////////////
     }
 
-    private boolean isInCheck() {
+    public boolean isInCheck() {
         List<Piece> opponentPieces = getBoard().getOpponentSet(this).getPieces();
         for (Piece opponentPiece : opponentPieces) {
             try {
-            Movement movement = new Movement(getRank(), getFile(), opponentPiece, null, null);
-            if (isInCheck(movement)) {
-                return true;
-            }
+                Movement movement = new Movement(getRank(), getFile(), opponentPiece, null, null);
+                if (isInCheck(movement)) {
+                    return true;
+                }
             } catch (GameException e) {
             }
         }
@@ -104,7 +104,6 @@ public class King extends Piece {
 
     public boolean isInCheck(Movement lastMovement) {
         Piece piece = lastMovement.getPiece();
-        Game game = lastMovement.getGame();
         try {
             Movement checkMovement = new Movement(getRank(), getFile(), piece, null, null);
             if (checkMovement.isValid()) {
@@ -113,6 +112,35 @@ public class King extends Piece {
         } catch (GameException e) {
         }
         return false;
+    }
+
+    public boolean isCheckMate() {
+        if (!isInCheck()) {
+            return false;
+        }
+        char currentRank = getRank();
+        char currentFile = getFile();
+        SetOfPieces mySet = getBoard().getMySet(this);
+        for (char rank = (char) (currentRank - 1); rank < currentRank + 2; rank++) {
+            for (char file = (char) (currentFile - 1); file < currentFile + 2; file++) {
+                try {
+                    if (mySet.getPiece(rank, file) != null) {
+                        continue;
+                    }
+                } catch (GameException e) {
+                }
+                setRank(rank);
+                setFile(file);
+                if (!isInCheck()) {
+                    setRank(currentRank);
+                    setFile(currentFile);
+                    return false;
+                }
+            }
+        }
+        setRank(currentRank);
+        setFile(currentFile);
+        return true;
     }
 
     private boolean willBeInCheckAt(char rank, char file) {

@@ -7,7 +7,7 @@
     <ui:define name="content">
         <h:form>
             <ui:include src="/board/board.xhtml"/>
-            <p:commandButton id="finish" value="Finish" action="#{gameBean.checkMate()}" />
+            <p:commandButton id="pause" value="Pause" action="#{gameBean.pause()}" />
         </h:form>
     </ui:define>
 </ui:composition>
