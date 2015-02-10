@@ -8,6 +8,8 @@ package br.edu.unifei.pco203.chess.model.test;
 import br.edu.unifei.pco203.chess.model.*;
 import br.edu.unifei.pco203.chess.control.dao.DataSource;
 import br.edu.unifei.pco203.chess.control.dao.GameDAO;
+import br.edu.unifei.pco203.chess.control.dao.MovementDAO;
+import br.edu.unifei.pco203.chess.control.dao.PieceDAO;
 import br.edu.unifei.pco203.chess.control.dao.PlayerDAO;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,9 +23,9 @@ import javax.persistence.EntityManager;
  */
 public class AppSim {
 
-    public static void main(String[] args) throws GameException {
+    private final static Scanner scan = new Scanner(System.in);
 
-        Scanner scan = new Scanner(System.in);
+    public static void main(String[] args) throws GameException {
 
         System.out.println("Enter the white player name: ");
         String whiteName = "Adriano";//scan.nextLine();
@@ -43,21 +45,31 @@ public class AppSim {
         System.out.println("---------------------------------");
         AppSim.printBoard(board);
 
-        Iterator<String> it = AppSim.testCheck();
+        EntityManager em = DataSource.createEntityManager();
+        GameDAO gameDAO = new GameDAO(em);
+        gameDAO.createFullfilledGame(game);
+
+        Iterator<String> it = AppSim.testPuttingKingInCheck();
         while (!game.isFinished()) {
             System.out.println(game.getPlayerTurn() + ", enter the next movement: ");
             String code = it.next();//scan.nextLine();
             try {
                 Movement movement = Movement.process(code, game);
                 game.move(movement);
-                clock.toggle();
                 AppSim.printBoard(board);
+                if (movement.isPromotionMovement()) {
+                    AppSim.promote((Pawn) movement.getPiece());
+                }
+                MovementDAO moveDAO = new MovementDAO(em);
+                moveDAO.create(movement);
+                gameDAO.update(game);
+                clock.toggle();
                 King opponentKing = board.getOpponentSet(movement.getPiece()).getKings().get(0);
-                /*if (opponentKing.isCheckMate()) {
+                if (opponentKing.isCheckMate()) {
                     game.checkMate();
                     System.out.println("Check Mate!!!");
                     System.out.println(game.getWinner().getName() + " wins!!!");
-                } else*/ if (opponentKing.isInCheck()) {
+                } else if (opponentKing.isInCheck()) {
                     System.out.println(game.getPlayerTurn().getName() + "'s king in check!!!");
                 }
             } catch (GameException e) {
@@ -71,13 +83,51 @@ public class AppSim {
         System.out.println("Game Over!!!");
         System.out.println("-------------------- Movements --------------------");
 
-        EntityManager em = DataSource.createEntityManager();
-        GameDAO gameDAO = new GameDAO(em);
-        gameDAO.createFullfilledGame(game);
         AppSim.displayMovements(board);
 
         em.close();
         DataSource.closeEntityManagerFactory();
+    }
+
+    private static void promote(Pawn pawn) {
+        char p;
+        System.out.println("Pawn promoted!!!");
+        Piece promotedPiece = null;
+        do {
+            System.out.println("Choose between (R) for rook, (N) for knight, (B) for bishop or (Q) for queen.");
+            String promotion = scan.nextLine();
+            p = Character.toLowerCase(promotion.charAt(0));
+            switch (p) {
+                case 'r':
+                    promotedPiece = new Rook();
+                    break;
+                case 'n':
+                    promotedPiece = new Knight();
+                    break;
+                case 'b':
+                    promotedPiece = new Bishop();
+                    break;
+                case 'q':
+                    promotedPiece = new Queen();
+                    break;
+                default:
+                    System.out.println("Invalid input!!!");
+            }
+        } while ((p != 'r') && (p != 'n') && (p != 'b') && (p != 'q'));
+        AppSim.registerPromotion(pawn, promotedPiece);
+        AppSim.printBoard(pawn.getBoard());
+    }
+
+    private static void registerPromotion(Pawn pawn, Piece promotedPiece) {
+        EntityManager em = DataSource.createEntityManager();
+        Board board = pawn.getBoard();
+        try {
+            board.promote(pawn, promotedPiece);
+        } catch (GameException e) {
+            System.out.println(e.getMessage());
+        }
+        PieceDAO pDAO = new PieceDAO(em);
+        pDAO.create(promotedPiece);
     }
 
     private static Player createPlayer(String name) {
@@ -176,13 +226,30 @@ public class AppSim {
         return moves.iterator();
     }
 
+    private static Iterator<String> testPromotion() {
+        List<String> moves = new ArrayList<>();
+        moves.add("p2a4a");/*w*/ moves.add("n8b6a");//b
+        moves.add("p4a5a");/*w*/ moves.add("p7b5b");//b
+        moves.add("p5a6b");/*w*/ moves.add("p7h6h");//b
+        moves.add("p6b7b");/*w*/ moves.add("p7g5g");//b
+        moves.add("p7b8b");/*w*/ moves.add("p7f6f");//b
+        moves.add("q8b8c");/*w*/
+        return moves.iterator();
+    }
+
     private static Iterator<String> testCheck() {
         List<String> moves = new ArrayList<>();
         moves.add("p2e3e");/*w*/ moves.add("p7a6a");//b
         moves.add("q1d3f");/*w*/ moves.add("p6a5a");//b
-        moves.add("b1f4c");/*w*/ moves.add("p7c6c");//b
+        moves.add("b1f4c");/*w*/ moves.add("p7b6b");//b
         moves.add("q3f7f");/*w*/
-
+        return moves.iterator();
+    }
+    
+    private static Iterator<String> testPuttingKingInCheck() {
+        List<String> moves = new ArrayList<>();
+        moves.add("p2c3c");/*w*/ moves.add("p7a6a");//b
+        moves.add("q1d4a");/*w*/ moves.add("p7d6d");//b
         return moves.iterator();
     }
 

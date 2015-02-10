@@ -5,6 +5,7 @@
  */
 package br.edu.unifei.pco203.chess.model;
 
+import java.util.GregorianCalendar;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
@@ -41,6 +42,12 @@ public class Pawn extends Piece {
             try {
                 setEnPassantTo(opponentSet.getPawn(rank, (char) (file + 1)));
             } catch (GameException e) {}
+        }
+    }
+    
+    public void promote() {
+        if (getPromotionDate() == null) {
+            setPromotionDate(new GregorianCalendar());
         }
     }
 
