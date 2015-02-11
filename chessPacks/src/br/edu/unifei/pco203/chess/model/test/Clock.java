@@ -14,40 +14,47 @@ import org.apache.commons.lang3.time.StopWatch;
  *
  * @author adriano
  */
-public class Clock implements Serializable{
-    
+public class Clock implements Serializable {
+
     private StopWatch whiteWatch = new StopWatch();
     private StopWatch blackWatch = new StopWatch();
     private Player white;
     private Player black;
     private Game game;
-    
+
     public Clock(Player white, Player black, Game game) {
         this.white = white;
         this.black = black;
         this.game = game;
         if (game.isPaused()) {
             setUpPausedGame();
-        }
-        else if (!game.isFinished()) {
+        } else if (!game.isFinished()) {
             startUpGame();
         }
     }
-    
+
     private void startUpGame() {
         blackWatch.start();
         blackWatch.suspend();
         whiteWatch.start();
     }
-    
+
     private void setUpPausedGame() {////////////////////////////////
         if (game.isWhiteTurn()) {
             
         } else {
-            
+
         }
     }
     
+    public long getWhiteElapsedTime() {
+        return whiteWatch.getTime();
+    }
+    
+    public long getBlackElapsedTime() {
+        return blackWatch.getTime();
+    }
+
     public void toggle() {
         if (!game.isWhiteTurn()) {
             whiteWatch.suspend();
@@ -57,15 +64,23 @@ public class Clock implements Serializable{
             whiteWatch.resume();
         }
     }
-    
+
     public void pauseGame() {
-        whiteWatch.suspend();
-        blackWatch.suspend();
+        if (!whiteWatch.isSuspended()) {
+            whiteWatch.suspend();
+        }
+        if (!blackWatch.isSuspended()) {
+            blackWatch.suspend();
+        }
     }
-    
+
     public void gameOver() {
-        whiteWatch.stop();
-        blackWatch.stop();
+        if (!whiteWatch.isStopped()) {
+            whiteWatch.stop();
+        }
+        if (!blackWatch.isStopped()) {
+            blackWatch.stop();
+        }
     }
 
     public StopWatch getWhiteWatch() {
@@ -107,5 +122,5 @@ public class Clock implements Serializable{
     public void setGame(Game game) {
         this.game = game;
     }
-    
+
 }

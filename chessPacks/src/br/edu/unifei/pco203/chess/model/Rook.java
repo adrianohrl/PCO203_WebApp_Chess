@@ -48,7 +48,7 @@ public class Rook extends Piece {
     
     @Override
     public boolean equals(Piece piece) {
-        return super.equals(piece) && piece instanceof Bishop && this.equals((Rook) piece);
+        return super.equals(piece) && piece instanceof Rook && this.equals((Rook) piece);
     }
     
     public boolean equals(Rook rook) {

@@ -88,9 +88,7 @@ public class King extends Piece {
         Board board = getBoard();
         SetOfPieces opponentSet = board.getOpponentSet(this);
         King king = board.getKing(opponentSet);
-        int vDisplacement = Math.abs(rank - king.getRank());
-        int hDisplacement = Math.abs(file - king.getFile());
-        return vDisplacement * hDisplacement < 2;
+        return Math.abs(rank - king.getRank()) < 2 && Math.abs(file - king.getFile()) < 2;
     }
 
     public boolean isInCheck() {
@@ -113,41 +111,18 @@ public class King extends Piece {
         if (!isInCheck()) {
             return false;
         }
-        char currentRank = getRank();
-        char currentFile = getFile();
-        for (char rank = (char) (currentRank - 1); rank < currentRank + 2; rank++) {
-            if (rank < '1' || rank > '8') {
-                continue;
-            }
-            for (char file = (char) (currentFile - 1); file < currentFile + 2; file++) {
-                if (file < 'a' || file > 'h') {
-                    continue;
-                }
-                if (!King.willBeInCheckOrIsInvalid(rank, file, this)) {
-                    return false;
+        List<Piece> pieces = getBoard().getMySet(this).getPieces();
+        for (Piece piece : pieces) {
+            for (char rank = '1'; rank <= '8'; rank++) {
+                for (char file = 'a'; file <= 'h'; file++) {
+                    if (piece.isValidMovement(rank, file)) {
+                        if (!King.willBeInCheckOrIsInvalid(rank, file, piece)) {
+                            return false;
+                        }
+                    }
                 }
             }
         }
-        /*SetOfPieces set = getBoard().getMySet(this);
-         // dealing with knights
-         List<Knight> myKnights = set.getKnights();
-         for (Knight myKnight : myKnights) {
-         currentRank = myKnight.getRank();
-         currentFile = myKnight.getFile();
-         for (char rank = (char) (currentRank - 2); rank < currentRank + 3; rank++) {
-         if (rank < '1' || rank > '8') {
-         continue;
-         }
-         for (char file = (char) (currentFile - 2); file < currentFile + 3; file++) {
-         if (file < 'a' || file > 'h') {
-         continue;
-         }
-         if (!King.willBeInCheckOrIsInvalid(rank, file, myKnight)) {
-         return false;
-         }
-         }
-         }
-         }*/
         return true;
     }
 

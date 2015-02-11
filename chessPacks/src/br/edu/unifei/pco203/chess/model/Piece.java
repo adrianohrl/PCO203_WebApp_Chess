@@ -119,11 +119,24 @@ public abstract class Piece implements Serializable {
     }
 
     public boolean equals(Piece piece) {
-        return piece != null && code == piece.code && rank == piece.rank && file == piece.file && whiteSet == piece.whiteSet;
+        if (piece == null) {
+            return false;
+        }
+        boolean succeeded;
+        if (promotionDate != null) {
+            succeeded = promotionDate.equals(piece.promotionDate);
+        } else {
+            succeeded = piece.promotionDate == null;
+        }
+        return code == piece.code && rank == piece.rank && file == piece.file 
+                && whiteSet == piece.whiteSet && succeeded;
     }
 
     @Override
     protected abstract Piece clone();
+    /*protected Piece clone() {
+        return null;
+    }*/
 
     public int getCode() {
         return code;

@@ -27,63 +27,78 @@ public class AppSim {
 
     public static void main(String[] args) throws GameException {
 
-        System.out.println("Enter the white player name: ");
-        String whiteName = "Adriano";//scan.nextLine();
-        Player white = AppSim.createPlayer(whiteName);
-
-        System.out.println("Enter the black player name: ");
-        String blackName = "Mônica";//scan.nextLine();
-        Player black = AppSim.createPlayer(blackName);
-
-        Game game = new Game(white, black);
-        game.getStarted();
-        Clock clock = new Clock(white, black, game);
-        Board board = game.getBoard();
-
-        AppSim.displayMenu();
-        System.out.println("So, let's play chess!!!");
-        System.out.println("---------------------------------");
-        AppSim.printBoard(board);
-
         EntityManager em = DataSource.createEntityManager();
-        GameDAO gameDAO = new GameDAO(em);
-        gameDAO.createFullfilledGame(game);
 
-        Iterator<String> it = AppSim.testPuttingKingInCheck();
-        while (!game.isFinished()) {
-            System.out.println(game.getPlayerTurn() + ", enter the next movement: ");
-            String code = it.next();//scan.nextLine();
-            try {
-                Movement movement = Movement.process(code, game);
-                game.move(movement);
-                AppSim.printBoard(board);
-                if (movement.isPromotionMovement()) {
-                    AppSim.promote((Pawn) movement.getPiece());
+        List<Iterator<String>> its = new ArrayList<>();
+        its.add(AppSim.testCastling());
+         its.add(AppSim.testCheck());
+         its.add(AppSim.testKingMovementLimitations());
+         its.add(AppSim.testPromotion());
+         its.add(AppSim.testPuttingKingInCheck());
+        its.add(AppSim.testFalseCheckMate());
+        for (Iterator<String> it : its) {
+
+            System.out.println("Enter the white player name: ");
+            String whiteName = "Adriano";//scan.nextLine();
+            Player white = AppSim.createPlayer(whiteName);
+
+            System.out.println("Enter the black player name: ");
+            String blackName = "Mônica";//scan.nextLine();
+            Player black = AppSim.createPlayer(blackName);
+
+            Game game = new Game(white, black);
+            game.getStarted();
+            Clock clock = new Clock(white, black, game);
+            Board board = game.getBoard();
+
+            AppSim.displayMenu();
+            System.out.println("So, let's play chess!!!");
+            System.out.println("---------------------------------");
+            AppSim.printBoard(board);
+
+            GameDAO gameDAO = new GameDAO(em);
+            gameDAO.createFullfilledGame(game);
+
+            while (!game.isFinished()) {
+                System.out.println(game.getPlayerTurn() + ", enter the next movement: ");
+                String code = it.next();//scan.nextLine();
+                try {
+                    Movement movement = Movement.process(code, game);
+                    game.move(movement);
+                    AppSim.printBoard(board);
+                    if (movement.isPromotionMovement()) {
+                        AppSim.promote((Pawn) movement.getPiece());
+                    }
+                    King opponentKing = board.getOpponentSet(movement.getPiece()).getKings().get(0);
+                    if (opponentKing.isCheckMate()) {
+                        game.checkMate();
+                        System.out.println("Check Mate!!!");
+                        System.out.println(game.getWinner().getName() + " wins!!!");
+                        System.out.println("Game Over!!!");
+                    } else if (opponentKing.isInCheck()) {
+                        System.out.println(game.getPlayerTurn().getName() + "'s king is in check!!!");
+                    }
+                    MovementDAO moveDAO = new MovementDAO(em);
+                    moveDAO.create(movement);
+                    gameDAO.update(game);
+                    clock.toggle();
+                } catch (GameException e) {
+                    System.out.println(e.getMessage());
                 }
-                MovementDAO moveDAO = new MovementDAO(em);
-                moveDAO.create(movement);
-                gameDAO.update(game);
-                clock.toggle();
-                King opponentKing = board.getOpponentSet(movement.getPiece()).getKings().get(0);
-                if (opponentKing.isCheckMate()) {
-                    game.checkMate();
-                    System.out.println("Check Mate!!!");
-                    System.out.println(game.getWinner().getName() + " wins!!!");
-                } else if (opponentKing.isInCheck()) {
-                    System.out.println(game.getPlayerTurn().getName() + "'s king in check!!!");
+                if (!game.isFinished() && !it.hasNext()) {
+                    game.pause();
+                    clock.pauseGame();
+                    System.out.println("Paused Game!!!");
+                    break;
                 }
-            } catch (GameException e) {
-                System.out.println(e.getMessage());
             }
-            if (!it.hasNext()) {
-                game.checkMate();
-                clock.gameOver();
-            }
+            
+            gameDAO.update(game);
+            System.out.println("-------------------- Movements --------------------");
+
+            AppSim.displayMovements(board);
+
         }
-        System.out.println("Game Over!!!");
-        System.out.println("-------------------- Movements --------------------");
-
-        AppSim.displayMovements(board);
 
         em.close();
         DataSource.closeEntityManagerFactory();
@@ -234,6 +249,7 @@ public class AppSim {
         moves.add("p6b7b");/*w*/ moves.add("p7g5g");//b
         moves.add("p7b8b");/*w*/ moves.add("p7f6f");//b
         moves.add("q8b8c");/*w*/
+
         return moves.iterator();
     }
 
@@ -243,13 +259,37 @@ public class AppSim {
         moves.add("q1d3f");/*w*/ moves.add("p6a5a");//b
         moves.add("b1f4c");/*w*/ moves.add("p7b6b");//b
         moves.add("q3f7f");/*w*/
+
         return moves.iterator();
     }
-    
+
     private static Iterator<String> testPuttingKingInCheck() {
         List<String> moves = new ArrayList<>();
         moves.add("p2c3c");/*w*/ moves.add("p7a6a");//b
         moves.add("q1d4a");/*w*/ moves.add("p7d6d");//b
+        return moves.iterator();
+    }
+
+    private static Iterator<String> testKingMovementLimitations() {
+        List<String> moves = new ArrayList<>();
+        moves.add("p2e3e");/*w*/ moves.add("p7e6e");//b
+        moves.add("k1e2e");/*w*/ moves.add("k8e7e");//b
+        moves.add("k2e3f");/*w*/ moves.add("k7e6f");//b
+        moves.add("k3f4f");/*w*/ moves.add("k6f5f");//b
+        return moves.iterator();
+    }
+
+    private static Iterator<String> testFalseCheckMate() {
+        List<String> moves = new ArrayList<>();
+        moves.add("p2e3e");/*w*/ moves.add("p7e5e");//b
+        moves.add("q1d3f");/*w*/ moves.add("q8d7e");//b
+        moves.add("b1f4c");/*w*/ moves.add("p7a5a");//b
+        moves.add("q3f7f");/*w*/ moves.add("q7e8d");//b
+                                 moves.add("k8e8d");//b
+        moves.add("q7f8f");/*w*/ moves.add("q7e8e");//b
+        moves.add("b4c7f");/*w*/ moves.add("n8g7e");//b
+        moves.add("q8f8h");/*w*/ moves.add("p7b6b");//b
+        moves.add("q8h8e");/*w*/ moves.add("p5e4e");//b
         return moves.iterator();
     }
 
