@@ -86,13 +86,16 @@ public class SetOfPieces implements Serializable {
         return blackSet;
     }
 
-    public void promotePawn(char file, Piece promotedPiece) throws GameException {
-        Piece pawn = this.getPawn(file);
-        int index = this.getPieceIndex(pawn);
+    public void promote(Pawn pawn, Piece promotedPiece) throws GameException {
+        if ((pawn.isWhiteSet() && pawn.getRank() != '8') || (!pawn.isWhiteSet() && pawn.getRank() != '1')) {
+            throw new GameException("This pawn cannot be promoted!!!");
+        }
+        pawn.promote();
         promotedPiece.copyFrom(pawn);
-        pieces.set(index, promotedPiece);
+        pieces.remove(pawn);
+        pieces.add(promotedPiece);
     }
-
+/*
     private int getPieceIndex(Piece piece) {
         int index = 0;
         for (Piece p : pieces) {
@@ -102,7 +105,7 @@ public class SetOfPieces implements Serializable {
             ++index;
         }
         return index;
-    }
+    }*/
 
     @Override
     public String toString() {
@@ -130,8 +133,7 @@ public class SetOfPieces implements Serializable {
         set.setPieces(clonedPieces);
         List<Movement> clonedMovements = new ArrayList<>();
         for (Movement movement : movements) {
-            Movement m = movement.clone();
-            clonedMovements.add(m);
+            clonedMovements.add(movement.clone());
         }
         set.setMovements(clonedMovements);
         return set;
@@ -212,6 +214,10 @@ public class SetOfPieces implements Serializable {
     public Bishop getBishop(char rank, char file) throws GameException {
         return (Bishop) getPiece(rank, file, Bishop.class);
     }
+    
+    public King getKing() throws GameException {
+        return getKings().get(0);
+    }
 
     public King getKing(char code) throws GameException {
         return (King) getPiece(code, King.class);
@@ -253,22 +259,17 @@ public class SetOfPieces implements Serializable {
         return (Rook) getPiece(rank, file, Rook.class);
     }
     
-    private List<Piece> getPieces(Class<?> type) throws GameException {
+    private List<Piece> getPieces(Class<?> type) {
         List<Piece> foundPieces = new ArrayList<>();
-        int counter = 0;
         for (Piece piece : pieces) {
             if (type.isInstance(piece)) {
                 foundPieces.add(piece);
-                counter++;
             }
-        }
-        if (counter == 0) {
-            throw new GameException("There is no such piece in this set!!!");
         }
         return foundPieces;
     }
     
-    public List<Pawn> getPawns() throws GameException {
+    public List<Pawn> getPawns() {
         List<Pawn> foundPawns = new ArrayList<>();
         List<Piece> foundPieces = getPieces(Pawn.class);
         for (Piece foundPiece : foundPieces) {
@@ -277,7 +278,7 @@ public class SetOfPieces implements Serializable {
         return foundPawns;
     }
     
-    public List<Rook> getRooks() throws GameException {
+    public List<Rook> getRooks() {
         List<Rook> foundRooks = new ArrayList<>();
         List<Piece> foundPieces = getPieces(Rook.class);
         for (Piece foundPiece : foundPieces) {
@@ -286,7 +287,7 @@ public class SetOfPieces implements Serializable {
         return foundRooks;
     }
     
-    public List<Knight> getKnights() throws GameException {
+    public List<Knight> getKnights() {
         List<Knight> foundKnights = new ArrayList<>();
         List<Piece> foundPieces = getPieces(Knight.class);
         for (Piece foundPiece : foundPieces) {
@@ -295,7 +296,7 @@ public class SetOfPieces implements Serializable {
         return foundKnights;
     }
     
-    public List<Bishop> getBishops() throws GameException {
+    public List<Bishop> getBishops() {
         List<Bishop> foundBishops = new ArrayList<>();
         List<Piece> foundPieces = getPieces(Bishop.class);
         for (Piece foundPiece : foundPieces) {
@@ -304,7 +305,7 @@ public class SetOfPieces implements Serializable {
         return foundBishops;
     }
     
-    public List<Queen> getQueens() throws GameException {
+    public List<Queen> getQueens() {
         List<Queen> foundQueens = new ArrayList<>();
         List<Piece> foundPieces = getPieces(Queen.class);
         for (Piece foundPiece : foundPieces) {
@@ -313,7 +314,7 @@ public class SetOfPieces implements Serializable {
         return foundQueens;
     }
     
-    public List<King> getKings() throws GameException {
+    public List<King> getKings() {
         List<King> foundKings = new ArrayList<>();
         List<Piece> foundPieces = getPieces(King.class);
         for (Piece foundPiece : foundPieces) {
@@ -322,27 +323,27 @@ public class SetOfPieces implements Serializable {
         return foundKings;
     }
     
-    public List<Piece> getPawnPieces() throws GameException {
+    public List<Piece> getPawnPieces() {
         return getPieces(Pawn.class);
     }
     
-    public List<Piece> getRookPieces() throws GameException {
+    public List<Piece> getRookPieces() {
         return getPieces(Rook.class);
     }
     
-    public List<Piece> getKnightPieces() throws GameException {
+    public List<Piece> getKnightPieces() {
         return getPieces(Knight.class);
     }
     
-    public List<Piece> getBishopPieces() throws GameException {
+    public List<Piece> getBishopPieces() {
         return getPieces(Bishop.class);
     }
     
-    public List<Piece> getQueenPieces() throws GameException {
+    public List<Piece> getQueenPieces() {
         return getPieces(Queen.class);
     }
     
-    public List<Piece> getKingPieces() throws GameException {
+    public List<Piece> getKingPieces() {
         return getPieces(King.class);
     }
 

@@ -31,10 +31,10 @@ public class AppSim {
 
         List<Iterator<String>> its = new ArrayList<>();
         its.add(AppSim.testCastling());
-         its.add(AppSim.testCheck());
-         its.add(AppSim.testKingMovementLimitations());
-         its.add(AppSim.testPromotion());
-         its.add(AppSim.testPuttingKingInCheck());
+        its.add(AppSim.testCheck());
+        its.add(AppSim.testKingMovementLimitations());
+        its.add(AppSim.testPromotion());
+        its.add(AppSim.testPuttingKingInCheck());
         its.add(AppSim.testFalseCheckMate());
         for (Iterator<String> it : its) {
 

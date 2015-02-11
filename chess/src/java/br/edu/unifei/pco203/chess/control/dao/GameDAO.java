@@ -19,7 +19,7 @@ public class GameDAO extends DAO<Game, Integer> {
     public GameDAO(EntityManager em) {
         super(em);
     }
-    
+
     public void createFullfilledGame(Game game) throws DAOException {
         if (game == null) {
             throw new DAOException("Game must not be null!!!");
@@ -35,18 +35,18 @@ public class GameDAO extends DAO<Game, Integer> {
         em.merge(game);
         em.getTransaction().commit();
     }
-    
+
     protected void creatingFullfilledGame(Game game) throws DAOException {
         em.merge(game);
     }
-    
+
     public List<Calendar> findAllUnfinished() {
         return em.createQuery("SELECT g.startDate FROM Game g WHERE g.endDate IS NULL").getResultList();
     }
-    
+
     public List<Game> findGames(Game game) {
-        return em.createQuery("SELECT g FROM Game g WHERE g.white.name = '" + game.getWhite().getName() 
+        return em.createQuery("SELECT g FROM Game g WHERE g.white.name = '" + game.getWhite().getName()
                 + "' AND g.black.name = '" + game.getBlack().getName() + "'").getResultList();
     }
-    
+
 }

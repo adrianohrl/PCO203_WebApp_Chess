@@ -38,7 +38,7 @@ public class King extends Piece {
         Board board = getBoard();
         return ((vDisplacement <= 1 && hDisplacement <= 1) || (hDisplacement == 2 && isCastlingAllowed(desiredFile)))
                 && !board.isThereAnyColleaguePieceAt(desiredRank, desiredFile, this)
-                && !isTheOpponentKingSurroundMe() && !willBeInCheckAt(desiredRank, desiredFile);//////////////////////////////////
+                && !isTheOpponentKingCloseTo(desiredRank, desiredFile);//////////////////////////////////
     }
 
     private boolean isCastlingAllowed(char kingNextFile) {
@@ -84,67 +84,81 @@ public class King extends Piece {
         return getCastlingRook(kingMovement.getNextFile());
     }
 
-    private boolean isTheOpponentKingSurroundMe() {
-        return false; //////////////////////////////
+    private boolean isTheOpponentKingCloseTo(char rank, char file) {
+        Board board = getBoard();
+        SetOfPieces opponentSet = board.getOpponentSet(this);
+        King king = board.getKing(opponentSet);
+        return Math.abs(rank - king.getRank()) < 2 && Math.abs(file - king.getFile()) < 2;
     }
 
     public boolean isInCheck() {
         List<Piece> opponentPieces = getBoard().getOpponentSet(this).getPieces();
         for (Piece opponentPiece : opponentPieces) {
-            try {
-                Movement movement = new Movement(getRank(), getFile(), opponentPiece, null, null);
-                if (isInCheck(movement)) {
-                    return true;
-                }
-            } catch (GameException e) {
+            Movement movement = new Movement(getRank(), getFile(), opponentPiece);
+            if (isInCheck(movement)) {
+                return true;
             }
         }
         return false;
     }
 
-    public boolean isInCheck(Movement lastMovement) {
+    private boolean isInCheck(Movement lastMovement) {
         Piece piece = lastMovement.getPiece();
-        try {
-            Movement checkMovement = new Movement(getRank(), getFile(), piece, null, null);
-            if (checkMovement.isValid()) {
-                return true;
-            }
-        } catch (GameException e) {
-        }
-        return false;
+        return piece.isValidMovement(getRank(), getFile());
     }
 
     public boolean isCheckMate() {
         if (!isInCheck()) {
             return false;
         }
-        char currentRank = getRank();
-        char currentFile = getFile();
-        SetOfPieces mySet = getBoard().getMySet(this);
-        for (char rank = (char) (currentRank - 1); rank < currentRank + 2; rank++) {
-            for (char file = (char) (currentFile - 1); file < currentFile + 2; file++) {
-                try {
-                    if (mySet.getPiece(rank, file) != null) {
-                        continue;
+        List<Piece> pieces = getBoard().getMySet(this).getPieces();
+        for (Piece piece : pieces) {
+            for (char rank = '1'; rank <= '8'; rank++) {
+                for (char file = 'a'; file <= 'h'; file++) {
+                    if (piece.isValidMovement(rank, file)) {
+                        if (!King.willBeInCheckOrIsInvalid(rank, file, piece)) {
+                            return false;
+                        }
                     }
-                } catch (GameException e) {
-                }
-                setRank(rank);
-                setFile(file);
-                if (!isInCheck()) {
-                    setRank(currentRank);
-                    setFile(currentFile);
-                    return false;
                 }
             }
         }
-        setRank(currentRank);
-        setFile(currentFile);
         return true;
     }
 
-    private boolean willBeInCheckAt(char rank, char file) {
-        return false; //////////////////////////
+    protected boolean willBeInCheckAt(char desiredRank, char desiredFile) {
+        try {
+            Board clonedBoard = getBoard().clone();
+            SetOfPieces mySet = clonedBoard.getMySet(this);
+            King king = mySet.getKing(getRank(), getFile());
+            Movement movement = new Movement(desiredRank, desiredFile, king);
+            movement.moveInFuture();
+            return king.isInCheck();
+        } catch (GameException e) {
+            return false;
+        }
+    }
+
+    protected static boolean willBeInCheckOrIsInvalid(char nextRank, char nextFile, Piece originalPiece) {
+        Board clonedBoard = originalPiece.getBoard().clone();
+        SetOfPieces mySet = clonedBoard.getMySet(originalPiece);
+        Piece piece = null;
+        try {
+            piece = mySet.getPiece(originalPiece.getRank(), originalPiece.getFile());
+            if (mySet.getPiece(nextRank, nextFile) != null) {
+                return true;
+            }
+        } catch (GameException e) {
+        }
+        try {
+            Movement movement = new Movement(nextRank, nextFile, piece);
+            movement.moveInFuture();
+            King king = mySet.getKing();
+            return king.isInCheck();
+        } catch (GameException e) {
+            StackTraceElement topSTE = e.getStackTrace()[0];
+            return !topSTE.getMethodName().equals("move");
+        }
     }
 
     @Override

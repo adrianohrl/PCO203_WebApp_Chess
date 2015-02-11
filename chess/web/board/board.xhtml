@@ -19,25 +19,44 @@
                     <ui:insert name="content_center">
                         <p:growl id="msgs" showDetail="true" />
                         <p:outputPanel id="board" layout="block" styleClass="board">
-                            <ui:repeat var="piece" value="#{gameBean.boardBean.whitePieces}">
+                            <p:panelGrid columns="8" style="width: 400px; 
+                                         height: 400px; 
+                                         background-color: transparent; 
+                                         border: hidden;
+                                         border-color: transparent;">
+                                <c:forEach var="rank" begin="1" end ="8">
+                                    <c:forEach var="file" begin="1" end="8">
+                                        <ui:remove>
+                                            <p:outputPanel id="r#{rank}f#{file}"/>
+                                        </ui:remove>
+                                        <p:droppable id="r#{rank}f#{file}" scope="valid" tolerance="fit">
+                                            <p:ajax listener="#{gameBean.onDrop}" update="board turn movementCode msgs" />
+                                        </p:droppable>
+                                    </c:forEach>
+                                </c:forEach>
+                            </p:panelGrid>
+                            <ui:remove>
+                                <c:forEach var="rank" begin="1" end ="8">
+                                    <c:forEach var="file" begin="1" end="8">
+                                        <p:droppable for="r#{rank}f#{file}" scope="valid" tolerance="fit">
+                                            <p:ajax listener="#{gameBean.onDrop}" update="board turn movementCode msgs" />
+                                        </p:droppable>
+                                    </c:forEach>
+                                </c:forEach>
+                            </ui:remove>
+                            <ui:repeat id="pieces" var="piece" value="#{gameBean.boardBean.pieces}">
                                 <p:graphicImage id="piece" style="position: absolute; left:#{piece.left()}px; top:#{piece.top()}px;" 
                                                 library="images/pieces/#{piece.color()}/" name="#{piece.type()}.png" cache="false"/>
-                                <p:draggable for="piece" opacity="0.7" containment="parent" revert="true" grid="50,50"
-                                             scope="#{piece.scope()}" />
-                            </ui:repeat>
-                            <ui:repeat var="piece" value="#{gameBean.boardBean.blackPieces}">
-                                <p:graphicImage id="piece" style="position: absolute; left:#{piece.left()}px; top:#{piece.top()}px;" 
-                                                library="images/pieces/#{piece.color()}/" name="#{piece.type()}.png" cache="false"/>
-                                <p:draggable for="piece" opacity="0.5" containment="parent" revert="true" grid="50,50"
+                                <p:draggable for="piece" opacity="0.7" containment="parent" revert="true" 
                                              scope="#{piece.scope()}" />
                             </ui:repeat>
                         </p:outputPanel>
                         <h:panelGrid columns="3" style="position: absolute; top: 510px;">
                             <p:outputLabel id="turn" for="movementCode" value="#{gameBean.playerTurn}'s turn: " styleClass="label"/>
                             <p:autoComplete id="movementCode" value="#{gameBean.movementCode}" completeMethod="#{gameBean.boardBean.completeText}" forceSelection="true">
-                                <p:ajax update="movementCode turn board msgs" resetValues="true" listener="#{gameBean.boardBean.changeButtonVisibility()}" />
+                                <p:ajax update="movementCode turn board msgs" resetValues="true" />
                             </p:autoComplete>
-                            <p:commandButton id="submit" resetValues="true" disabled="#{gameBean.boardBean.autoSubmit}" value="Submit" 
+                            <p:commandButton id="submit" resetValues="true" value="Submit" 
                                              update="board turn movementCode msgs" action="#{gameBean.update()}" icon="ui-icon-check" />
                             <p:message for="movementCode" display="Movement code is required!!!" />
                         </h:panelGrid>

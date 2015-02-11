@@ -40,6 +40,17 @@ public class Movement implements Serializable {
 
     public Movement() {
     }
+    
+    protected Movement(char desiredRank, char desiredFile, Piece piece) {
+        this.currentRank = piece.getRank();
+        this.currentFile = piece.getFile();
+        this.nextRank = desiredRank;
+        this.nextFile = desiredFile;
+        this.piece = piece;
+        this.player = null;
+        this.game = null;
+        this.capture = isCaptureMovement();
+    }
 
     public Movement(char desiredRank, char desiredFile, Piece piece, Player player, Game game) throws GameException {
         desiredRank = Character.toLowerCase(desiredRank);
@@ -63,8 +74,8 @@ public class Movement implements Serializable {
         this.capture = isCaptureMovement();
     }
 
-    public void move() throws GameException {
-        Board board = game.getBoard();
+    protected void move() throws GameException {
+        Board board = piece.getBoard();
         if (isValid()) {
             if (isEnPassantCaptureMovement()) {
                 Pawn pawn = (Pawn) piece;
@@ -84,16 +95,42 @@ public class Movement implements Serializable {
             throw new GameException("Invalid movement!!! Try again.");
         }
     }
-
-    public boolean isValid() {
-        return piece.isValidMovement(nextRank, nextFile);
+    
+    protected void moveInFuture() throws GameException {
+        Board board = piece.getBoard();
+        if (piece.isValidMovement(nextRank, nextFile)) {
+            if (isEnPassantCaptureMovement()) {
+                Pawn pawn = (Pawn) piece;
+                board.enPassantCapture(pawn);
+            } else if (isCastlingMovement()) {
+                King king = (King) piece;
+                Rook rook = king.getCastlingRook(this);
+                board.castlingMove(king, rook);
+            } else if (isCapture()) {
+                SetOfPieces opponentSet = board.getOpponentSet(piece);
+                board.capture(piece, opponentSet.getPiece(nextRank, nextFile));
+            } else {
+                board.move(piece, nextRank, nextFile);
+            }
+            currentDate = new GregorianCalendar();
+        } else {
+            throw new GameException("Invalid movement!!! Try again.");
+        }
     }
 
-    private boolean isCaptureMovement() {
+    protected boolean isValid() {
+        boolean valid = piece.isValidMovement(nextRank, nextFile);
+        if (piece instanceof King) {
+            valid &= piece.isValidMovement(nextRank, nextFile) && !((King) piece).willBeInCheckAt(nextRank, nextFile);
+        }
+        return valid && !Piece.willPutMyKingInCheck(nextRank, nextFile, piece);
+    }
+
+    protected boolean isCaptureMovement() {
         return piece.getBoard().isThereAnyOpponentPieceAt(nextRank, nextFile, piece) || isEnPassantCaptureMovement();
     }
 
-    private boolean isEnPassantCaptureMovement() {
+    protected boolean isEnPassantCaptureMovement() {
         Pawn pawn = null;
         if (piece instanceof Pawn) {
             pawn = (Pawn) piece;
@@ -103,12 +140,20 @@ public class Movement implements Serializable {
                 && !board.isThereAnyPieceAt(nextRank, nextFile);
     }
 
-    private boolean isCastlingMovement() {
+    protected boolean isCastlingMovement() {
         King king = null;
         if (piece instanceof King) {
             king = (King) piece;
         }
         return king != null && !king.isMovedBefore() && Math.abs(currentFile - nextFile) == 2;
+    }
+    
+    public boolean isPromotionMovement() {
+        Pawn pawn = null;
+        if (piece instanceof Pawn) {
+            pawn = (Pawn) piece;
+        }
+        return pawn != null && ((pawn.isWhiteSet() && nextRank == '8') || (!pawn.isWhiteSet() && nextRank == '1'));
     }
 
     public static Movement process(String code, Game game) throws GameException {

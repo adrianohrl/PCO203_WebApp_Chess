@@ -30,7 +30,11 @@ public class Board implements Serializable {
     public Board() {
 
     }
-    
+
+    public void promote(Pawn pawn, Piece promotedPiece)  throws GameException {
+        getMySet(pawn).promote(pawn, promotedPiece);
+    }
+
     public void enPassantCapture(Pawn hunter) throws GameException {
         if (hunter == null) {
             throw new GameException("It is not allowed to make an en passant movement!!!");
@@ -51,7 +55,7 @@ public class Board implements Serializable {
             whiteSet.getPieces().remove(target);
         }
     }
-    
+
     public void castlingMove(King king, Rook rook) throws GameException {
         if (king == null) {
             throw new GameException("King must not be null!!!");
@@ -81,7 +85,7 @@ public class Board implements Serializable {
             whiteSet.getPieces().remove(target);
         }
     }
-    
+
     public void move(Piece piece, char nextRank, char nextFile) throws GameException {
         if (piece == null) {
             throw new GameException("Piece must not be null!!!");
@@ -93,12 +97,29 @@ public class Board implements Serializable {
         whiteSet = SetOfPieces.getWhiteSet(this);
         blackSet = SetOfPieces.getBlackSet(this);
     }
-    
+
+    public King getKing(SetOfPieces set) {
+        King king = null;
+        try {
+            king = set.getKing();
+        } catch (GameException e) {
+        }
+        return king;
+    }
+
+    public King getWhiteKing() {
+        return getKing(whiteSet);
+    }
+
+    public King getBlackKing() {
+        return getKing(blackSet);
+    }
+
     public SetOfPieces getMySet(Piece piece) {
         SetOfPieces mySet = blackSet;
         if (piece.isWhiteSet()) {
             mySet = whiteSet;
-        } 
+        }
         return mySet;
     }
 
@@ -106,18 +127,18 @@ public class Board implements Serializable {
         SetOfPieces opponentSet = whiteSet;
         if (piece.isWhiteSet()) {
             opponentSet = blackSet;
-        } 
+        }
         return opponentSet;
     }
-    
+
     public SetOfPieces getOpponentSet(SetOfPieces colleagueSet) {
         SetOfPieces opponentSet = whiteSet;
         if (colleagueSet.isWhiteSet()) {
             opponentSet = blackSet;
-        } 
+        }
         return opponentSet;
     }
-    
+
     private boolean isThereAnyPieceAt(char rank, char file, SetOfPieces set) {
         try {
             return set.getPiece(rank, file) != null;
@@ -125,27 +146,27 @@ public class Board implements Serializable {
             return false;
         }
     }
-    
+
     public boolean isThereAnyPieceAt(char rank, char file) {
         return isThereAnyPieceAt(rank, file, whiteSet) || isThereAnyPieceAt(rank, file, blackSet);
     }
-    
+
     public boolean isThereAnyColleaguePieceAt(char rank, char file, Piece piece) {
         return isThereAnyPieceAt(rank, file, getMySet(piece));
     }
-    
+
     public boolean isThereAnyColleaguePieceAt(char rank, char file, SetOfPieces mySet) {
         return isThereAnyPieceAt(rank, file, mySet);
     }
-    
+
     public boolean isThereAnyOpponentPieceAt(char rank, char file, Piece piece) {
         return isThereAnyPieceAt(rank, file, getOpponentSet(piece));
     }
-    
+
     public boolean isThereAnyOpponentPieceAt(char rank, char file, SetOfPieces mySet) {
         return isThereAnyPieceAt(rank, file, getOpponentSet(mySet));
     }
-    
+
     private boolean isThereAnyPawnAt(char rank, char file, SetOfPieces set) {
         try {
             return set.getPawn(rank, file) != null;
@@ -153,15 +174,15 @@ public class Board implements Serializable {
             return false;
         }
     }
-    
+
     public boolean isThereAnyOpponentPawnAt(char rank, char file, Piece piece) {
         return isThereAnyPawnAt(rank, file, getOpponentSet(piece));
     }
-    
+
     public boolean isThereAnyOpponentPawnAt(char rank, char file, SetOfPieces mySet) {
         return isThereAnyPawnAt(rank, file, getOpponentSet(mySet));
     }
-    
+
     private boolean isTheKingAt(char rank, char file, SetOfPieces set) {
         try {
             return set.getKing(rank, file) != null;
@@ -169,11 +190,11 @@ public class Board implements Serializable {
             return false;
         }
     }
-    
+
     public boolean isTheOpponentKingAt(char rank, char file, Piece piece) {
         return isTheKingAt(rank, file, getOpponentSet(piece));
     }
-    
+
     public boolean isTheOpponentKingAt(char rank, char file, SetOfPieces mySet) {
         return isTheKingAt(rank, file, getOpponentSet(mySet));
     }
@@ -182,7 +203,7 @@ public class Board implements Serializable {
     public String toString() {
         return "Board:\n" + whiteSet + blackSet;
     }
-    
+
     @Override
     public Board clone() {
         Board board = new Board();

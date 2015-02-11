@@ -127,10 +127,14 @@ public class Game implements Serializable {
     }
 
     public int compareTo(Game anotherGame) {
-        if (pauseDate != null) {
-            return pauseDate.compareTo(anotherGame.getPauseDate());
+        if (anotherGame == null) {
+            return -1000;
+        } else if (pauseDate != null && anotherGame.pauseDate != null) {
+            return pauseDate.compareTo(anotherGame.pauseDate);
+        } else if (startDate != null && anotherGame.startDate != null) {
+            return startDate.compareTo(anotherGame.startDate);
         } else {
-            return startDate.compareTo(anotherGame.getStartDate());
+            return -999;
         }
     }
 

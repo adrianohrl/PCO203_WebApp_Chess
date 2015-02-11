@@ -6,10 +6,12 @@
 package br.edu.unifei.pco203.chess.model;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
 
 /**
  *
@@ -26,6 +28,8 @@ public abstract class Piece implements Serializable {
     private boolean whiteSet;
     @ManyToOne
     private Board board;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Calendar promotionDate;
 
     public Piece() {
 
@@ -75,15 +79,21 @@ public abstract class Piece implements Serializable {
                 return false;
             }
         }
-        /*try {
-            King myKing = board.getMySet(this).getKings().get(0);
-            Movement movement = new Movement(desiredRank, desiredFile, this, null, null);
-            if (myKing.isInCheck(movement)) {
-                return false;
-            }
-        } catch (GameException e) {
-        }*/
         return true;
+    }
+
+    protected static boolean willPutMyKingInCheck(char desiredRank, char desiredFile, Piece piece) {
+        try {
+            Board board = piece.getBoard().clone();
+            SetOfPieces mySet = board.getMySet(piece);
+            Piece clonnedPiece = mySet.getPiece(piece.getRank(), piece.getFile());
+            King myKing = board.getKing(mySet);
+            Movement movement = new Movement(desiredRank, desiredFile, clonnedPiece);
+            movement.moveInFuture();
+            return myKing.isInCheck();
+        } catch (GameException e) {
+            return false;
+        }
     }
 
     public void copyFrom(Piece piece) {
@@ -91,6 +101,11 @@ public abstract class Piece implements Serializable {
         this.file = piece.file;
         this.whiteSet = piece.whiteSet;
         this.board = piece.board;
+        this.promotionDate = piece.promotionDate;
+    }
+
+    public boolean isPromoted() {
+        return promotionDate != null;
     }
 
     @Override
@@ -104,13 +119,24 @@ public abstract class Piece implements Serializable {
     }
 
     public boolean equals(Piece piece) {
-        return piece != null && code == piece.code && rank == piece.rank && file == piece.file && whiteSet == piece.whiteSet;
+        if (piece == null) {
+            return false;
+        }
+        boolean succeeded;
+        if (promotionDate != null) {
+            succeeded = promotionDate.equals(piece.promotionDate);
+        } else {
+            succeeded = piece.promotionDate == null;
+        }
+        return code == piece.code && rank == piece.rank && file == piece.file 
+                && whiteSet == piece.whiteSet && succeeded;
     }
 
     @Override
-    protected Piece clone() {
+    protected abstract Piece clone();
+    /*protected Piece clone() {
         return null;
-    }
+    }*/
 
     public int getCode() {
         return code;
@@ -150,6 +176,14 @@ public abstract class Piece implements Serializable {
 
     public void setBoard(Board board) {
         this.board = board;
+    }
+
+    public Calendar getPromotionDate() {
+        return promotionDate;
+    }
+
+    public void setPromotionDate(Calendar promotionDate) {
+        this.promotionDate = promotionDate;
     }
 
 }

@@ -8,8 +8,6 @@ package br.edu.unifei.pco203.chess.control.bean;
 import br.edu.unifei.pco203.chess.control.dao.BoardDAO;
 import br.edu.unifei.pco203.chess.control.dao.DataSource;
 import br.edu.unifei.pco203.chess.model.Board;
-import br.edu.unifei.pco203.chess.model.Game;
-import br.edu.unifei.pco203.chess.model.GameException;
 import br.edu.unifei.pco203.chess.model.Piece;
 import br.edu.unifei.pco203.chess.model.SetOfPieces;
 import java.io.Serializable;
@@ -31,11 +29,10 @@ public class BoardBean implements Serializable {
     private final BoardDAO boardDAO = new BoardDAO(em);
     private List<PieceBean> whitePieces = new ArrayList<>();
     private List<PieceBean> blackPieces = new ArrayList<>();
-    private List<Piece> pieces = new ArrayList();
+    private List<PieceBean> pieces = new ArrayList<>();
     private Board board = new Board();
     private GameBean gameBean;
     private String txt;
-    private boolean autoSubmit;
 
     public BoardBean() {
 
@@ -48,13 +45,13 @@ public class BoardBean implements Serializable {
         for (Piece piece : whiteSet.getPieces()) {
             PieceBean pieceBean = PieceBean.getInstance(piece);
             whitePieces.add(pieceBean);
-            pieces.add(piece);
+            pieces.add(pieceBean);
         }
         SetOfPieces blackSet = board.getBlackSet();
         for (Piece piece : blackSet.getPieces()) {
             PieceBean pieceBean = PieceBean.getInstance(piece);
             blackPieces.add(pieceBean);
-            pieces.add(piece);
+            pieces.add(pieceBean);
         }
     }
 
@@ -64,40 +61,33 @@ public class BoardBean implements Serializable {
         if (code.length() > 5) {
             gameBean.setMovementCode(code.substring(0, 4));
             return results;
-        } else if (code.length() == 5 && autoSubmit) {
-            gameBean.update();
         } else if (code.length() >= 3) {
             return results;
         }
         List<Piece> foundPieces;
         SetOfPieces set = gameBean.getGame().getSetTurn();
-        try {
-            switch (Character.toLowerCase(code.charAt(0))) {
-                case 'b':
-                    foundPieces = set.getBishopPieces();
-                    break;
-                case 'k':
-                    foundPieces = set.getKingPieces();
-                    break;
-                case 'n':
-                    foundPieces = set.getKnightPieces();
-                    break;
-                case 'p':
-                    foundPieces = set.getPawnPieces();
-                    break;
-                case 'q':
-                    foundPieces = set.getQueenPieces();
-                    break;
-                case 'r':
-                    foundPieces = set.getRookPieces();
-                    break;
-                default:
-                    gameBean.setMovementCode("");
-                    return results;
-            }
-        } catch (GameException e) {
-            gameBean.setMovementCode("");
-            return results;
+        switch (Character.toLowerCase(code.charAt(0))) {
+            case 'b':
+                foundPieces = set.getBishopPieces();
+                break;
+            case 'k':
+                foundPieces = set.getKingPieces();
+                break;
+            case 'n':
+                foundPieces = set.getKnightPieces();
+                break;
+            case 'p':
+                foundPieces = set.getPawnPieces();
+                break;
+            case 'q':
+                foundPieces = set.getQueenPieces();
+                break;
+            case 'r':
+                foundPieces = set.getRookPieces();
+                break;
+            default:
+                gameBean.setMovementCode("");
+                return results;
         }
         for (Piece piece : foundPieces) {
             String suggestedCode = null;
@@ -147,11 +137,11 @@ public class BoardBean implements Serializable {
         this.blackPieces = blackPieces;
     }
 
-    public List<Piece> getPieces() {
+    public List<PieceBean> getPieces() {
         return pieces;
     }
 
-    public void setPieces(List<Piece> pieces) {
+    public void setPieces(List<PieceBean> pieces) {
         this.pieces = pieces;
     }
 
@@ -169,14 +159,6 @@ public class BoardBean implements Serializable {
 
     public void setGameBean(GameBean gameBean) {
         this.gameBean = gameBean;
-    }
-
-    public boolean isAutoSubmit() {
-        return autoSubmit;
-    }
-
-    public void setAutoSubmit(boolean autoSubmit) {
-        this.autoSubmit = autoSubmit;
     }
 
 }

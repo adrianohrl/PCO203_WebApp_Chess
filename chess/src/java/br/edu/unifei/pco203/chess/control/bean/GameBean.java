@@ -7,13 +7,14 @@ package br.edu.unifei.pco203.chess.control.bean;
 
 import br.edu.unifei.pco203.chess.control.dao.DataSource;
 import br.edu.unifei.pco203.chess.control.dao.GameDAO;
-import br.edu.unifei.pco203.chess.control.dao.MovementDAO;
 import br.edu.unifei.pco203.chess.control.dao.PlayerDAO;
 import br.edu.unifei.pco203.chess.model.Game;
 import br.edu.unifei.pco203.chess.model.GameException;
 import br.edu.unifei.pco203.chess.model.King;
 import br.edu.unifei.pco203.chess.model.Movement;
+import br.edu.unifei.pco203.chess.model.Piece;
 import br.edu.unifei.pco203.chess.model.Player;
+import br.edu.unifei.pco203.chess.model.SetOfPieces;
 import java.io.Serializable;
 import java.util.List;
 import javax.faces.application.FacesMessage;
@@ -21,6 +22,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
+import org.primefaces.event.DragDropEvent;
 
 /**
  *
@@ -64,10 +66,9 @@ public class GameBean implements Serializable {
         return "/board/play";
     }
 
-    public String checkMate() {
+    public void checkMate() {
         game.checkMate();
         gameDAO.update(game);
-        return "/index";
     }
 
     public String pause() {
@@ -76,20 +77,30 @@ public class GameBean implements Serializable {
         return "/index";
     }
 
+    private void addMovement(Movement movement) {
+        MovementBean movementBean = new MovementBean();
+        movementBean.setMovement(movement);
+        movementBean.create();
+        gameDAO.update(game);
+    }
+
     public String update() {
         FacesContext context = FacesContext.getCurrentInstance();
+        if (game.isFinished()) {
+            context.addMessage(null, new FacesMessage("Finished Game: ", game.getWinner().getName() + " won!!!"));
+            return "/index";
+        }
         try {
             Movement movement = Movement.process(movementCode, game);
             game.move(movement);
-            MovementBean movementBean = new MovementBean();
-            movementBean.setMovement(movement);
-            movementBean.create();
-            gameDAO.update(game);
-            King opponentKing = game.getBoard().getOpponentSet(movement.getPiece()).getKings().get(0);
-            /*if (opponentKing.isCheckMate()) {
-             game.checkMate();
-             context.addMessage(null, new FacesMessage("Check Mate: ", game.getWinner().getName() + " wins!!!"));
-             } else*/ if (opponentKing.isInCheck()) {
+            addMovement(movement);
+            SetOfPieces opponentSet = game.getBoard().getOpponentSet(movement.getPiece());
+            King opponentKing = opponentSet.getKing();
+            if (opponentKing.isCheckMate()) {
+                checkMate();
+                context.addMessage(null, new FacesMessage("Check Mate: ", game.getWinner().getName() + " wins!!!"));
+                return "/index";
+            } else if (opponentKing.isInCheck()) {
                 context.addMessage(null, new FacesMessage("Check", game.getPlayerTurn().getName() + "'s king in check!!!"));
             }
         } catch (GameException e) {
@@ -116,7 +127,7 @@ public class GameBean implements Serializable {
         }
         Game lastGame = playedGames.get(0);
         for (Game playedGame : playedGames) {
-            if (playedGame.compareTo(lastGame) > 0) {
+            if (playedGame != null && playedGame.compareTo(lastGame) > 0) {
                 lastGame = playedGame;
             }
         }
@@ -124,6 +135,20 @@ public class GameBean implements Serializable {
         boardBean = new BoardBean(this);
         playerTurn = game.getPlayerTurn().getName();
         return "/board/play";
+    }
+
+    public String onDrop(DragDropEvent event) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (event != null) {
+            context.addMessage(null, new FacesMessage("Piece dropped!!!", "DragId: " + event.getDragId() + " DropId: " + event.getDropId()));
+            String[] data = event.getDragId().split(":");
+            int index = Integer.parseInt(data[2]);
+            PieceBean pieceBean = boardBean.getPieces().get(index);
+            Piece piece = pieceBean.getPiece();
+            movementCode = piece + "" + piece.getRank() + "" + piece.getFile() + "";
+            return update();
+        }
+        return "";
     }
 
     public Game getGame() {
