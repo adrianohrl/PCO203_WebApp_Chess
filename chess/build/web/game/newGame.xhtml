@@ -5,19 +5,22 @@
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:p="http://primefaces.org/ui">
     <ui:define name="content">
-        <h:form>
-            <br/>
-            <h:panelGrid id="grid" columns="3">
-                <p:outputLabel for="white" value="White Player:" styleClass="label" />
-                <p:inputText id="white" value="#{gameBean.selectedWhitePlayer}" required="true" />
-                <p:message for="white" display="White's name is required!!!" />
+        <h:form id="form">
+            <p:panel header="New Game" styleClass="panel">
+                <h:panelGrid id="grid" columns="3" cellpadding="5">
+                    <p:outputLabel for="white" value="White Player:" styleClass="label"/>
+                    <p:inputText id="white" value="#{gameBean.selectedWhitePlayer}" required="true" />
+                    <p:message for="white" display="White's name is required!!!" />
 
-                <p:outputLabel for="black" value="Black Player:" styleClass="label" />
-                <p:inputText id="black" value="#{gameBean.selectedBlackPlayer}" required="true" />
-                <p:message for="black" display="Black's name is required!!!" />
-            </h:panelGrid>
-            <br/>
-            <p:commandButton id="setUp" value="Set Up" update="grid" action="#{gameBean.start()}" />
+                    <p:outputLabel for="black" value="Black Player:" styleClass="label"/>
+                    <p:inputText id="black" value="#{gameBean.selectedBlackPlayer}" required="true" />
+                    <p:message for="black" display="Black's name is required!!!" />
+                    
+                    <h:outputLabel value=""/>
+                    <p:commandButton id="start" value="Start" update="grid" action="#{gameBean.start()}" />
+                    <h:outputLabel value=""/>
+                </h:panelGrid>
+            </p:panel>
         </h:form>
     </ui:define>
 </ui:composition>

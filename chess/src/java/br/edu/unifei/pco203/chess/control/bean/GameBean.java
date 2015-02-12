@@ -12,7 +12,6 @@ import br.edu.unifei.pco203.chess.model.Game;
 import br.edu.unifei.pco203.chess.model.GameException;
 import br.edu.unifei.pco203.chess.model.King;
 import br.edu.unifei.pco203.chess.model.Movement;
-import br.edu.unifei.pco203.chess.model.Piece;
 import br.edu.unifei.pco203.chess.model.Player;
 import br.edu.unifei.pco203.chess.model.SetOfPieces;
 import java.io.Serializable;
@@ -63,7 +62,7 @@ public class GameBean implements Serializable {
         boardBean = new BoardBean(this);
         playerTurn = game.getPlayerTurn().getName();
         gameDAO.createFullfilledGame(game);
-        return "";
+        return "/board/play";
     }
 
     public void checkMate() {
@@ -146,14 +145,13 @@ public class GameBean implements Serializable {
             
             String[] pieceIds = dragId.split(":");
             int pieceIndex = Integer.parseInt(pieceIds[2]);
-            PieceBean pieceBean = boardBean.getPieces().get(pieceIndex);
-            Piece piece = pieceBean.getPiece();
+            PieceBean piece = boardBean.getPieces().get(pieceIndex);
             
             String[] slotIds = dropId.split(":");
             int slotIndex = Integer.parseInt(slotIds[2]);
             Slot slot = boardBean.getSlots().get(slotIndex);
             
-            movementCode = piece + "" + piece.getRank() + "" + piece.getFile() + "" + slot.getRank() + "" + slot.getFile();
+            movementCode = piece.getNotationCode() + "" + piece.getRank() + "" + piece.getFile() + "" + slot.getRank() + "" + slot.getFile();
             return update();
         }
         return "";

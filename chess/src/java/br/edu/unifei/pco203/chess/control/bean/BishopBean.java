@@ -23,12 +23,12 @@ public class BishopBean extends PieceBean<Bishop> implements Serializable {
         super.setPiece(new Bishop());
     }
     
-    public BishopBean(Bishop bishop) {
-        super(bishop);
+    public BishopBean(Bishop bishop, String scope, boolean disabled) {
+        super(bishop, scope, disabled);
     }
     
-    public static BishopBean getInstance(Bishop bishop) {
-        return new BishopBean(bishop);
+    public static BishopBean getInstance(Bishop bishop, String scope, boolean disabled) {
+        return new BishopBean(bishop, scope, disabled);
     }
     
 }

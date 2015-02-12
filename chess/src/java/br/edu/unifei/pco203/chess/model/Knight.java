@@ -33,14 +33,10 @@ public class Knight extends Piece {
     }
 
     @Override
-    public String toString() {
-        if (super.isWhiteSet()) {
-            return "N";
-        } else {
-            return "n";
-        }
+    public String getNotationCode() {
+        return "n";
     }
-    
+
     @Override
     public boolean equals(Piece piece) {
         return super.equals(piece) && piece instanceof Knight;
@@ -56,8 +52,8 @@ public class Knight extends Piece {
         return knight;
     }
 
-    /*@Override
-     public String toString() {
-     return this.getClass().getSimpleName() + " " + super.toString();
-     }*/
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + " " + super.toString();
+    }
 }

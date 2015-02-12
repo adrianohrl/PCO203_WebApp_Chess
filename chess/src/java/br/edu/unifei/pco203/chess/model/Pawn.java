@@ -38,13 +38,15 @@ public class Pawn extends Piece {
             SetOfPieces opponentSet = getBoard().getOpponentSet(this);
             try {
                 setEnPassantTo(opponentSet.getPawn(rank, (char) (file - 1)));
-            } catch (GameException e) {}
+            } catch (GameException e) {
+            }
             try {
                 setEnPassantTo(opponentSet.getPawn(rank, (char) (file + 1)));
-            } catch (GameException e) {}
+            } catch (GameException e) {
+            }
         }
     }
-    
+
     public void promote() {
         if (getPromotionDate() == null) {
             setPromotionDate(new GregorianCalendar());
@@ -62,22 +64,22 @@ public class Pawn extends Piece {
             SetOfPieces opponentSet = board.getOpponentSet(this);
             return !board.isThereAnyColleaguePieceAt(desiredRank, desiredFile, this)
                     && ((isWhiteSet() && desiredRank > rank) || (!isWhiteSet() && desiredRank < rank))
-                    && ((!isAtHome() && vDisplacement == 1) 
-                        || (isAtHome() 
-                        && (vDisplacement == 1 
-                            || (vDisplacement == 2 && desiredFile == file 
-                            && !board.isThereAnyPieceAt((char) ((desiredRank + rank) / 2), desiredFile)))))
+                    && ((!isAtHome() && vDisplacement == 1)
+                    || (isAtHome()
+                    && (vDisplacement == 1
+                    || (vDisplacement == 2 && desiredFile == file
+                    && !board.isThereAnyPieceAt((char) ((desiredRank + rank) / 2), desiredFile)))))
                     && ((hDisplacement == 0 && !board.isThereAnyPieceAt(desiredRank, desiredFile))
-                        || (hDisplacement == 1 
-                        && (board.isThereAnyOpponentPieceAt(desiredRank, desiredFile, this)
-                            || (isEnPassantAllowed() && board.isThereAnyOpponentPawnAt(rank, desiredFile, this) 
-                            && enPassantPawn.equals(opponentSet.getPawn(rank, desiredFile))
-                            && !board.isThereAnyOpponentPieceAt(desiredRank, desiredFile, this)))));
-        } catch(GameException e) {
+                    || (hDisplacement == 1
+                    && (board.isThereAnyOpponentPieceAt(desiredRank, desiredFile, this)
+                    || (isEnPassantAllowed() && board.isThereAnyOpponentPawnAt(rank, desiredFile, this)
+                    && enPassantPawn.equals(opponentSet.getPawn(rank, desiredFile))
+                    && !board.isThereAnyOpponentPieceAt(desiredRank, desiredFile, this)))));
+        } catch (GameException e) {
             return false;
         }
     }
-    
+
     private void setEnPassantTo(Pawn pawn) {
         pawn.setEnPassantPawn(this);
     }
@@ -87,21 +89,17 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public String toString() {
-        if (super.isWhiteSet()) {
-            return "P";
-        } else {
-            return "p";
-        }
+    public String getNotationCode() {
+        return "p";
     }
 
     @Override
     public boolean equals(Piece piece) {
         return super.equals(piece) && piece instanceof Pawn && this.equals((Pawn) piece);
     }
-    
+
     public boolean equals(Pawn pawn) {
-        return super.equals(pawn) && atHome == pawn.atHome 
+        return super.equals(pawn) && atHome == pawn.atHome
                 && ((enPassantPawn != null && enPassantPawn.equals(pawn.enPassantPawn) || enPassantPawn == pawn.enPassantPawn));
     }
 
@@ -118,11 +116,11 @@ public class Pawn extends Piece {
         return pawn;
     }
 
-    /*@Override
-     public String toString() {
-     return this.getClass().getSimpleName() + " " + super.toString();
-     }*/
-    
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + " " + super.toString();
+    }
+
     public boolean isAtHome() {
         return atHome;
     }

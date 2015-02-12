@@ -23,12 +23,12 @@ public class RookBean extends PieceBean<Rook> implements Serializable {
         super.setPiece(new Rook());
     }
     
-    public RookBean(Rook rook) {
-        super(rook);
+    public RookBean(Rook rook, String scope, boolean disabled) {
+        super(rook, scope, disabled);
     }
     
-    public static RookBean getInstance(Rook rook) {
-        return new RookBean(rook);
+    public static RookBean getInstance(Rook rook, String scope, boolean disabled) {
+        return new RookBean(rook, scope, disabled);
     }
     
 }

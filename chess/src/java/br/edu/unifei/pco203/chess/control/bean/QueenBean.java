@@ -23,12 +23,12 @@ public class QueenBean extends PieceBean<Queen> implements Serializable {
         super.setPiece(new Queen());
     }
     
-    public QueenBean(Queen queen) {
-        super(queen);
+    public QueenBean(Queen queen, String scope, boolean disabled) {
+        super(queen, scope, disabled);
     }
     
-    public static QueenBean getInstance(Queen queen) {
-        return new QueenBean(queen);
+    public static QueenBean getInstance(Queen queen, String scope, boolean disabled) {
+        return new QueenBean(queen, scope, disabled);
     }
     
 }

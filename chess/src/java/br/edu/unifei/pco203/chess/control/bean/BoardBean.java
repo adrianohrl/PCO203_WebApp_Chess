@@ -8,6 +8,7 @@ package br.edu.unifei.pco203.chess.control.bean;
 import br.edu.unifei.pco203.chess.control.dao.BoardDAO;
 import br.edu.unifei.pco203.chess.control.dao.DataSource;
 import br.edu.unifei.pco203.chess.model.Board;
+import br.edu.unifei.pco203.chess.model.Game;
 import br.edu.unifei.pco203.chess.model.Piece;
 import br.edu.unifei.pco203.chess.model.SetOfPieces;
 import java.io.Serializable;
@@ -28,6 +29,8 @@ public class BoardBean implements Serializable {
     private final EntityManager em = DataSource.createEntityManager();
     private final BoardDAO boardDAO = new BoardDAO(em);
     private List<PieceBean> pieces = new ArrayList<>();
+    private List<PieceBean> whiteCapturedPieces = new ArrayList<>();
+    private List<PieceBean> blackCapturedPieces = new ArrayList<>();
     private List<Slot> slots = new ArrayList<>();
     private Board board = new Board();
     private GameBean gameBean;
@@ -43,16 +46,30 @@ public class BoardBean implements Serializable {
     public BoardBean(GameBean gameBean) {
         this();
         this.gameBean = gameBean;
-        board = gameBean.getGame().getBoard();
+        Game game = gameBean.getGame();
+        board = game.getBoard();
+        setTurn(game.isWhiteTurn());
+    }
+    
+    public void setTurn(boolean whiteTurn) {
+        String whiteScope = "invalid";
+        String blackScope = "invalid";
+        if (whiteTurn) {
+            whiteScope = "valid";
+        } else {
+            blackScope = "valid";
+        }
         SetOfPieces whiteSet = board.getWhiteSet();
         for (Piece piece : whiteSet.getPieces()) {
-            PieceBean pieceBean = PieceBean.getInstance(piece);
+            PieceBean pieceBean = PieceBean.getInstance(piece, whiteScope, !whiteTurn);
             pieces.add(pieceBean);
+            whiteCapturedPieces.add(pieceBean);
         }
         SetOfPieces blackSet = board.getBlackSet();
         for (Piece piece : blackSet.getPieces()) {
-            PieceBean pieceBean = PieceBean.getInstance(piece);
+            PieceBean pieceBean = PieceBean.getInstance(piece, blackScope, whiteTurn);
             pieces.add(pieceBean);
+            blackCapturedPieces.add(pieceBean);
         }
     }
 
@@ -144,6 +161,22 @@ public class BoardBean implements Serializable {
 
     public void setSlots(List<Slot> slots) {
         this.slots = slots;
+    }
+
+    public List<PieceBean> getWhiteCapturedPieces() {
+        return whiteCapturedPieces;
+    }
+
+    public void setWhiteCapturedPieces(List<PieceBean> whiteCapturedPieces) {
+        this.whiteCapturedPieces = whiteCapturedPieces;
+    }
+
+    public List<PieceBean> getBlackCapturedPieces() {
+        return blackCapturedPieces;
+    }
+
+    public void setBlackCapturedPieces(List<PieceBean> blackCapturedPieces) {
+        this.blackCapturedPieces = blackCapturedPieces;
     }
 
 }

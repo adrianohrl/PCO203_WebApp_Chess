@@ -38,19 +38,15 @@ public class Rook extends Piece {
     }
 
     @Override
-    public String toString() {
-        if (super.isWhiteSet()) {
-            return "R";
-        } else {
-            return "r";
-        }
+    public String getNotationCode() {
+        return "r";
     }
-    
+
     @Override
     public boolean equals(Piece piece) {
         return super.equals(piece) && piece instanceof Rook && this.equals((Rook) piece);
     }
-    
+
     public boolean equals(Rook rook) {
         return super.equals(rook) && movedBefore == rook.movedBefore;
     }
@@ -66,11 +62,11 @@ public class Rook extends Piece {
         return rook;
     }
 
-    /*@Override
-     public String toString() {
-     return this.getClass().getSimpleName() + " " + super.toString();
-     }*/
-    
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + " " + super.toString();
+    }
+
     public boolean isMovedBefore() {
         return movedBefore;
     }

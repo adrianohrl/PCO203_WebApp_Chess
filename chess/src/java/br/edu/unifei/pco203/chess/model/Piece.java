@@ -107,6 +107,11 @@ public abstract class Piece implements Serializable {
     public boolean isPromoted() {
         return promotionDate != null;
     }
+    
+    public abstract String getNotationCode();
+    /*public String getNotationCode() {
+        return "";
+    }*/
 
     @Override
     public String toString() {

@@ -23,12 +23,12 @@ public class KingBean extends PieceBean<King> implements Serializable {
         super.setPiece(new King());
     }
     
-    public KingBean(King king) {
-        super(king);
+    public KingBean(King king, String scope, boolean disabled) {
+        super(king, scope, disabled);
     }
     
-    public static KingBean getInstance(King king) {
-        return new KingBean(king);
+    public static KingBean getInstance(King king, String scope, boolean disabled) {
+        return new KingBean(king, scope, disabled);
     }
     
 }

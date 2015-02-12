@@ -17,7 +17,7 @@ public class Bishop extends Piece {
     public Bishop() {
         super();
     }
-    
+
     public Bishop(char rank, char file, boolean whiteSet, Board board) throws GameException {
         super(rank, file, whiteSet, board);
     }
@@ -28,21 +28,17 @@ public class Bishop extends Piece {
         int hDisplacement = Math.abs(desiredFile - getFile());
         return vDisplacement == hDisplacement && super.isValidMovement(desiredRank, desiredFile);
     }
-    
+
     @Override
-    public String toString() {
-        if (super.isWhiteSet()) {
-            return "B";
-        } else {
-            return "b";
-        }
+    public String getNotationCode() {
+        return "b";
     }
-    
+
     @Override
     public boolean equals(Piece piece) {
         return super.equals(piece) && piece instanceof Bishop;
     }
-    
+
     public Bishop clone() {
         Bishop bishop = new Bishop();
         bishop.setCode(getCode());
@@ -51,10 +47,10 @@ public class Bishop extends Piece {
         bishop.setWhiteSet(isWhiteSet());
         return bishop;
     }
-    
-    /*@Override
+
+    @Override
     public String toString() {
         return this.getClass().getSimpleName() + " " + super.toString();
-    }*/
-    
+    }
+
 }

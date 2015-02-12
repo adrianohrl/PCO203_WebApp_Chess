@@ -162,12 +162,8 @@ public class King extends Piece {
     }
 
     @Override
-    public String toString() {
-        if (super.isWhiteSet()) {
-            return "K";
-        } else {
-            return "k";
-        }
+    public String getNotationCode() {
+        return "k";
     }
 
     @Override
@@ -190,10 +186,11 @@ public class King extends Piece {
         return king;
     }
 
-    /*@Override
-     public String toString() {
-     return this.getClass().getSimpleName() + " " + super.toString();
-     }*/
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + " " + super.toString();
+    }
+
     public boolean isMovedBefore() {
         return movedBefore;
     }

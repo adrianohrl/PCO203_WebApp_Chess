@@ -27,13 +27,16 @@ public abstract class PieceBean <P extends Piece> implements Serializable {
     private final PieceDAO pieceDAO = new PieceDAO(em);
     private final Class<P> clazz = (Class<P>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     private P piece;
+    private String scope;
+    private boolean disabled;
     
     public PieceBean() {
         
     }
     
-    public PieceBean(P piece) {
+    public PieceBean(P piece, String scope, boolean disabled) {
         this.piece = piece;
+        this.scope = scope;
     }
 
     public String create() {
@@ -53,10 +56,6 @@ public abstract class PieceBean <P extends Piece> implements Serializable {
         return clazz.getSimpleName().toLowerCase();
     }
     
-    public String scope() {
-        return "valid";
-    }
-    
     public String top() {
         Integer rank = ('8' - piece.getRank()) * 50;
         return rank.toString();
@@ -67,22 +66,34 @@ public abstract class PieceBean <P extends Piece> implements Serializable {
         return file.toString();
     }
     
-    public static <P> PieceBean getInstance(P piece) {
+    public static <P> PieceBean getInstance(P piece, String scope, boolean disabled) {
         PieceBean pieceBean = null;
         if (piece instanceof Pawn) {
-            pieceBean = PawnBean.getInstance((Pawn) piece);
+            pieceBean = PawnBean.getInstance((Pawn) piece, scope, disabled);
         } else if (piece instanceof Rook) {
-            pieceBean = RookBean.getInstance((Rook) piece);
+            pieceBean = RookBean.getInstance((Rook) piece, scope, disabled);
         } else if (piece instanceof Knight) {
-            pieceBean = KnightBean.getInstance((Knight) piece);
+            pieceBean = KnightBean.getInstance((Knight) piece, scope, disabled);
         } else if (piece instanceof Bishop) {
-            pieceBean = BishopBean.getInstance((Bishop) piece);
+            pieceBean = BishopBean.getInstance((Bishop) piece, scope, disabled);
         } else if (piece instanceof Queen) {
-            pieceBean = QueenBean.getInstance((Queen) piece);
+            pieceBean = QueenBean.getInstance((Queen) piece, scope, disabled);
         } else if (piece instanceof King) {
-            pieceBean = KingBean.getInstance((King) piece);
+            pieceBean = KingBean.getInstance((King) piece, scope, disabled);
         }
         return pieceBean;
+    }
+    
+    public String getNotationCode() {
+        return piece.getNotationCode();
+    }
+    
+    public char getRank() {
+        return piece.getRank();
+    }
+    
+    public char getFile() {
+        return piece.getFile();
     }
 
     public P getPiece() {
@@ -91,6 +102,22 @@ public abstract class PieceBean <P extends Piece> implements Serializable {
 
     public void setPiece(P piece) {
         this.piece = piece;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 
 }

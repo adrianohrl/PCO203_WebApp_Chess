@@ -8,7 +8,14 @@
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <ui:fragment>
         <div id="content_left" class="content_left">
-            <ui:insert name="content_left"></ui:insert>
+            <ui:insert name="content_left">
+                <p:panel header="White Player: #{gameBean.selectedWhitePlayer}" styleClass="panel"
+                         toggleable="true" toggleSpeed="500" widgetVar="panel1">
+                    <ui:repeat id="whiteCapturedPieces" var="piece" value="#{gameBean.boardBean.whiteCapturedPieces}">
+                        <p:graphicImage id="piece" library="images/pieces/#{piece.color()}/" name="#{piece.type()}.png"/>
+                    </ui:repeat>
+                </p:panel>
+            </ui:insert>
         </div>
         <div>
             <div>
@@ -20,35 +27,48 @@
                         <p:growl id="msgs" showDetail="true" />
                         <p:outputPanel id="board" layout="block" styleClass="board">
                             <ui:repeat id="slots" var="slot" value="#{gameBean.boardBean.slots}">
-                                <p:outputPanel id="slot" 
-                                               style="background-color: transparent; position: absolute; 
+                                <p:outputPanel id="slot" style="background-color: transparent; position: absolute; 
                                                top: #{slot.top}px; left: #{slot.left}px;
                                                width: 50px; height: 50px;"/> 
                                 <p:droppable for="slot" scope="#{slot.scope}" tolerance="fit">
-                                    <p:ajax listener="#{gameBean.onDrop}" update="turn movementCode msgs" />
+                                    <p:ajax listener="#{gameBean.onDrop}" update=":form"/>
                                 </p:droppable>
                             </ui:repeat>
                             <ui:repeat id="pieces" var="piece" value="#{gameBean.boardBean.pieces}">
                                 <p:graphicImage id="piece" style="position: absolute; left:#{piece.left()}px; top:#{piece.top()}px;" 
                                                 library="images/pieces/#{piece.color()}/" name="#{piece.type()}.png" cache="false"/>
-                                <p:draggable for="piece" opacity="0.7" revert="true" grid="50,50"
-                                             scope="#{piece.scope()}" />
+                                <p:draggable for="piece" opacity="0.7" revert="true" grid="50,50" containment="parent" 
+                                             disabled="#{piece.disabled}" scope="#{piece.scope}" />
                             </ui:repeat>
                         </p:outputPanel>
-                        <h:panelGrid columns="3" style="position: absolute; top: 510px;">
-                            <p:outputLabel id="turn" for="movementCode" value="#{gameBean.playerTurn}'s turn: " styleClass="label"/>
-                            <p:autoComplete id="movementCode" value="#{gameBean.movementCode}" completeMethod="#{gameBean.boardBean.completeText}" forceSelection="true">
-                                <p:ajax update="movementCode turn board msgs" resetValues="true" />
-                            </p:autoComplete>
-                            <p:commandButton id="submit" resetValues="true" value="Submit" 
-                                             update="board turn movementCode msgs" action="#{gameBean.update()}" icon="ui-icon-check" />
-                            <p:message for="movementCode" display="Movement code is required!!!" />
-                        </h:panelGrid>
+
+                    </ui:insert>
+                </div>
+                <div id="content_bottom" class="content_bottom">
+                    <ui:insert name="content_bottom">
+                        <p:panel styleClass="panel">
+                            <h:panelGrid columns="4">
+                                <p:outputLabel id="turn" for="movementCode" value="Go #{gameBean.playerTurn}:" styleClass="label"/>
+                                <p:autoComplete id="movementCode" value="#{gameBean.movementCode}"
+                                                completeMethod="#{gameBean.boardBean.completeText}" forceSelection="true">
+                                    <p:ajax update="form" resetValues="true" />
+                                </p:autoComplete>
+                                <p:commandButton id="submit" resetValues="true" value="Submit" update="form" 
+                                                 action="#{gameBean.update()}" icon="ui-icon-check" />
+                            </h:panelGrid>
+                        </p:panel>
                     </ui:insert>
                 </div>
             </div>
             <div id="content_right" class="content_right">
-                <ui:insert name="content_right"></ui:insert>
+                <ui:insert name="content_right">
+                    <p:panel header="Black Player: #{gameBean.selectedBlackPlayer}" styleClass="panel"
+                             toggleable="true" toggleSpeed="500" widgetVar="panel2">
+                        <ui:repeat id="blackCapturedPieces" var="piece" value="#{gameBean.boardBean.blackCapturedPieces}">
+                            <p:graphicImage id="piece" library="images/pieces/#{piece.color()}/" name="#{piece.type()}.png"/>
+                        </ui:repeat>
+                    </p:panel>
+                </ui:insert>
             </div>
         </div>
     </ui:fragment>

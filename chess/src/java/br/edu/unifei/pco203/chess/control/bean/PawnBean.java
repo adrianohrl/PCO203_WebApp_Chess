@@ -23,12 +23,12 @@ public class PawnBean extends PieceBean<Pawn> implements Serializable {
         super.setPiece(new Pawn());
     }
     
-    public PawnBean(Pawn pawn) {
-        super(pawn);
+    public PawnBean(Pawn pawn, String scope, boolean disabled) {
+        super(pawn, scope, disabled);
     }
     
-    public static PawnBean getInstance(Pawn pawn) {
-        return new PawnBean(pawn);
+    public static PawnBean getInstance(Pawn pawn, String scope, boolean disabled) {
+        return new PawnBean(pawn, scope, disabled);
     }
     
 }

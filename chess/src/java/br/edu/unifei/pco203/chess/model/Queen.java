@@ -30,12 +30,8 @@ public class Queen extends Piece {
     }
     
     @Override
-    public String toString() {
-        if (super.isWhiteSet()) {
-            return "Q";
-        } else {
-            return "q";
-        }
+    public String getNotationCode() {
+        return "q";
     }
     
     @Override
@@ -43,10 +39,10 @@ public class Queen extends Piece {
         return super.equals(piece) && piece instanceof Queen;
     }
     
-    /*@Override
+    @Override
     public String toString() {
         return this.getClass().getSimpleName() + " " + super.toString();
-    }*/
+    }
 
     @Override
     public Queen clone() {

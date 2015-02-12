@@ -23,12 +23,12 @@ public class KnightBean extends PieceBean<Knight> implements Serializable {
         super.setPiece(new Knight());
     }
     
-    public KnightBean(Knight knight) {
-        super(knight);
+    public KnightBean(Knight knight, String scope, boolean disabled) {
+        super(knight, scope, disabled);
     }
     
-    public static KnightBean getInstance(Knight knight) {
-        return new KnightBean(knight);
+    public static KnightBean getInstance(Knight knight, String scope, boolean disabled) {
+        return new KnightBean(knight, scope, disabled);
     }
     
 }
