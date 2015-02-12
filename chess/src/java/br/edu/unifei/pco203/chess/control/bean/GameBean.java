@@ -63,7 +63,7 @@ public class GameBean implements Serializable {
         boardBean = new BoardBean(this);
         playerTurn = game.getPlayerTurn().getName();
         gameDAO.createFullfilledGame(game);
-        return "/board/play";
+        return "";
     }
 
     public void checkMate() {
@@ -140,12 +140,20 @@ public class GameBean implements Serializable {
     public String onDrop(DragDropEvent event) {
         FacesContext context = FacesContext.getCurrentInstance();
         if (event != null) {
-            context.addMessage(null, new FacesMessage("Piece dropped!!!", "DragId: " + event.getDragId() + " DropId: " + event.getDropId()));
-            String[] data = event.getDragId().split(":");
-            int index = Integer.parseInt(data[2]);
-            PieceBean pieceBean = boardBean.getPieces().get(index);
+            String dragId = event.getDragId();
+            String dropId = event.getDropId();
+            context.addMessage(null, new FacesMessage("Piece dropped!!!", "DragId: " + dragId + " DropId: " + dropId));
+            
+            String[] pieceIds = dragId.split(":");
+            int pieceIndex = Integer.parseInt(pieceIds[2]);
+            PieceBean pieceBean = boardBean.getPieces().get(pieceIndex);
             Piece piece = pieceBean.getPiece();
-            movementCode = piece + "" + piece.getRank() + "" + piece.getFile() + "";
+            
+            String[] slotIds = dropId.split(":");
+            int slotIndex = Integer.parseInt(slotIds[2]);
+            Slot slot = boardBean.getSlots().get(slotIndex);
+            
+            movementCode = piece + "" + piece.getRank() + "" + piece.getFile() + "" + slot.getRank() + "" + slot.getFile();
             return update();
         }
         return "";

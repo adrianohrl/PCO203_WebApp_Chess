@@ -19,35 +19,19 @@
                     <ui:insert name="content_center">
                         <p:growl id="msgs" showDetail="true" />
                         <p:outputPanel id="board" layout="block" styleClass="board">
-                            <p:panelGrid columns="8" style="width: 400px; 
-                                         height: 400px; 
-                                         background-color: transparent; 
-                                         border: hidden;
-                                         border-color: transparent;">
-                                <c:forEach var="rank" begin="1" end ="8">
-                                    <c:forEach var="file" begin="1" end="8">
-                                        <ui:remove>
-                                            <p:outputPanel id="r#{rank}f#{file}"/>
-                                        </ui:remove>
-                                        <p:droppable id="r#{rank}f#{file}" scope="valid" tolerance="fit">
-                                            <p:ajax listener="#{gameBean.onDrop}" update="board turn movementCode msgs" />
-                                        </p:droppable>
-                                    </c:forEach>
-                                </c:forEach>
-                            </p:panelGrid>
-                            <ui:remove>
-                                <c:forEach var="rank" begin="1" end ="8">
-                                    <c:forEach var="file" begin="1" end="8">
-                                        <p:droppable for="r#{rank}f#{file}" scope="valid" tolerance="fit">
-                                            <p:ajax listener="#{gameBean.onDrop}" update="board turn movementCode msgs" />
-                                        </p:droppable>
-                                    </c:forEach>
-                                </c:forEach>
-                            </ui:remove>
+                            <ui:repeat id="slots" var="slot" value="#{gameBean.boardBean.slots}">
+                                <p:outputPanel id="slot" 
+                                               style="background-color: transparent; position: absolute; 
+                                               top: #{slot.top}px; left: #{slot.left}px;
+                                               width: 50px; height: 50px;"/> 
+                                <p:droppable for="slot" scope="#{slot.scope}" tolerance="fit">
+                                    <p:ajax listener="#{gameBean.onDrop}" update="turn movementCode msgs" />
+                                </p:droppable>
+                            </ui:repeat>
                             <ui:repeat id="pieces" var="piece" value="#{gameBean.boardBean.pieces}">
                                 <p:graphicImage id="piece" style="position: absolute; left:#{piece.left()}px; top:#{piece.top()}px;" 
                                                 library="images/pieces/#{piece.color()}/" name="#{piece.type()}.png" cache="false"/>
-                                <p:draggable for="piece" opacity="0.7" containment="parent" revert="true" 
+                                <p:draggable for="piece" opacity="0.7" revert="true" grid="50,50"
                                              scope="#{piece.scope()}" />
                             </ui:repeat>
                         </p:outputPanel>
@@ -62,13 +46,6 @@
                         </h:panelGrid>
                     </ui:insert>
                 </div>
-                <ui:remove>
-                    <div id="content_bottom" class="content_bottom">
-                        <ui:insert name="content_bottom">
-
-                        </ui:insert>
-                    </div>
-                </ui:remove>
             </div>
             <div id="content_right" class="content_right">
                 <ui:insert name="content_right"></ui:insert>

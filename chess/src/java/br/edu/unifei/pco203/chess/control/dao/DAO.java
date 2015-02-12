@@ -5,6 +5,7 @@
  */
 package br.edu.unifei.pco203.chess.control.dao;
 
+import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.TypeVariable;
 import java.util.List;
@@ -16,7 +17,7 @@ import javax.persistence.EntityManager;
  * @param <E>
  * @param <K>
  */
-public abstract class DAO<E, K> {
+public abstract class DAO<E, K> implements Serializable {
 
     protected EntityManager em;
     private final Class<E> clazz;

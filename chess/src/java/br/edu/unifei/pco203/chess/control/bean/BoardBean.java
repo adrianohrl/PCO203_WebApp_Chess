@@ -27,30 +27,31 @@ public class BoardBean implements Serializable {
 
     private final EntityManager em = DataSource.createEntityManager();
     private final BoardDAO boardDAO = new BoardDAO(em);
-    private List<PieceBean> whitePieces = new ArrayList<>();
-    private List<PieceBean> blackPieces = new ArrayList<>();
     private List<PieceBean> pieces = new ArrayList<>();
+    private List<Slot> slots = new ArrayList<>();
     private Board board = new Board();
     private GameBean gameBean;
-    private String txt;
 
     public BoardBean() {
-
+        for (char rank = '1'; rank <= '8'; rank++) {
+            for (char file = 'a'; file <= 'h'; file++) {
+                slots.add(new Slot(rank, file));
+            }
+        }
     }
 
     public BoardBean(GameBean gameBean) {
+        this();
         this.gameBean = gameBean;
         board = gameBean.getGame().getBoard();
         SetOfPieces whiteSet = board.getWhiteSet();
         for (Piece piece : whiteSet.getPieces()) {
             PieceBean pieceBean = PieceBean.getInstance(piece);
-            whitePieces.add(pieceBean);
             pieces.add(pieceBean);
         }
         SetOfPieces blackSet = board.getBlackSet();
         for (Piece piece : blackSet.getPieces()) {
             PieceBean pieceBean = PieceBean.getInstance(piece);
-            blackPieces.add(pieceBean);
             pieces.add(pieceBean);
         }
     }
@@ -121,22 +122,6 @@ public class BoardBean implements Serializable {
         this.board = board;
     }
 
-    public List<PieceBean> getWhitePieces() {
-        return whitePieces;
-    }
-
-    public void setWhitePieces(List<PieceBean> whitePieces) {
-        this.whitePieces = whitePieces;
-    }
-
-    public List<PieceBean> getBlackPieces() {
-        return blackPieces;
-    }
-
-    public void setBlackPieces(List<PieceBean> blackPieces) {
-        this.blackPieces = blackPieces;
-    }
-
     public List<PieceBean> getPieces() {
         return pieces;
     }
@@ -145,20 +130,20 @@ public class BoardBean implements Serializable {
         this.pieces = pieces;
     }
 
-    public String getTxt() {
-        return txt;
-    }
-
-    public void setTxt(String txt) {
-        this.txt = txt;
-    }
-
     public GameBean getGameBean() {
         return gameBean;
     }
 
     public void setGameBean(GameBean gameBean) {
         this.gameBean = gameBean;
+    }
+
+    public List<Slot> getSlots() {
+        return slots;
+    }
+
+    public void setSlots(List<Slot> slots) {
+        this.slots = slots;
     }
 
 }
