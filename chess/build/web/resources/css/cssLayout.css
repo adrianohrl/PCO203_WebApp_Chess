@@ -1,7 +1,7 @@
 
 #top {
     //background-image: url("../images/top.png");
-    background-image: url("../images/wood.jpg");
+    background-image: url("../images/wood.png");
     border-radius: 20px;
     position: absolute;
     top: 10px;
@@ -13,7 +13,7 @@
 #bottom {
     //background-image: url("../images/bottom.png");
     border-radius: 20px;
-    background-image: url("../images/wood.jpg");
+    background-image: url("../images/wood.png");
     position: absolute;
     top: 880px;
     left: 10px;
@@ -23,7 +23,7 @@
 
 #left {
     //background-image: url("../images/left.png");
-    background-image: url("../images/wood.jpg");
+    background-image: url("../images/wood.png");
     border-radius: 20px;
     position: absolute;
     top: 170px;
@@ -34,7 +34,7 @@
 
 #right {
     //background-image: url("../images/right.png");
-    background-image: url("../images/wood.jpg");
+    background-image: url("../images/wood.png");
     border-radius: 20px;
     position: absolute;
     top: 170px;
@@ -105,6 +105,24 @@
     width: 390px;
 }
 
+#bottom_left {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    height: 75px;
+    width: 880px;
+    border-radius: 10px;
+    margin-left: 10px;
+}
+
+#bottom_right {
+    position: absolute;
+    top: 10px;
+    left: 910px;
+    height: 75px;
+    width: 880px;
+    border-radius: 10px;
+}
 
 #top a:link, #top a:visited {
   color: white;
@@ -119,7 +137,7 @@
 }
 
 .panel {
-    background: url("../images/wood.jpg");
+    background: url("../images/wood.png");
     margin: 10px;
     border: none;
     border-radius: 10px;

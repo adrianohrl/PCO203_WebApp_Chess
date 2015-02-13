@@ -10,7 +10,7 @@ import br.edu.unifei.pco203.chess.control.dao.MovementDAO;
 import br.edu.unifei.pco203.chess.model.Movement;
 import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.RequestScoped;
 import javax.persistence.EntityManager;
 
 /**
@@ -18,7 +18,7 @@ import javax.persistence.EntityManager;
  * @author adriano
  */
 @ManagedBean
-@ViewScoped
+@RequestScoped
 public class MovementBean implements Serializable {
 
     private final EntityManager em = DataSource.createEntityManager();

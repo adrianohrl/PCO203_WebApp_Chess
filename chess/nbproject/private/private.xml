@@ -3,8 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/adriano/Documents/PCO203/Chess/chess/src/java/br/edu/unifei/pco203/chess/model/Board.java</file>
-            <file>file:/home/adriano/Documents/PCO203/Chess/chess/src/java/br/edu/unifei/pco203/chess/model/Bishop.java</file>
+            <file>file:/home/adriano/Documents/PCO203/Chess/chess/web/board/play.xhtml</file>
+            <file>file:/home/adriano/Documents/PCO203/Chess/chess/web/resources/css/cssLayout.css</file>
+            <file>file:/home/adriano/Documents/PCO203/Chess/chess/src/java/br/edu/unifei/pco203/chess/control/bean/GameBean.java</file>
+            <file>file:/home/adriano/Documents/PCO203/Chess/chess/web/board/board.xhtml</file>
+            <file>file:/home/adriano/Documents/PCO203/Chess/chess/src/java/br/edu/unifei/pco203/chess/model/Movement.java</file>
         </group>
     </open-files>
 </project-private>
